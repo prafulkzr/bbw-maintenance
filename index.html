@@ -703,12 +703,11 @@ function showScreen(name){
 
 // ── LOAD CONFIG ──
 (function(){
-  try{
-    const url=localStorage.getItem('bbw_sb_url');
-    const key=localStorage.getItem('bbw_sb_key');
-    if(url&&key){sbUrl=url;sbKey=key;initAuth();}
-    else{showScreen('setup');}
-  }catch(e){showScreen('setup');}
+  // Hardcoded credentials - no setup screen needed
+  sbUrl='https://mdiyisxvxdywfrspigpt.supabase.co';
+  sbKey='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kaXlpc3h2eGR5d2Zyc3BpZ3B0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwMDU2MDIsImV4cCI6MjA5MzU4MTYwMn0.NTf0Ahny8ZbDxrZRZaNGD6KtV1jw1zALYdV8O5T8iZM';
+  try{localStorage.setItem('bbw_sb_url',sbUrl);localStorage.setItem('bbw_sb_key',sbKey);}catch(e){}
+  initAuth();
   checkUrlParams();
 })();
 
