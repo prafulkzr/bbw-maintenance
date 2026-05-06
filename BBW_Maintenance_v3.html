@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>BBW Maintenance</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black:#0a0a0a; --white:#ffffff; --off:#f5f4f0;
+  --g100:#f0efeb; --g200:#e2e1dc; --g300:#c8c7c0; --g400:#9e9d96;
+  --g500:#6e6d66; --g600:#4a4942; --g700:#2e2d28;
+  --red:#c0392b; --orange:#c0622b; --blue:#2b5fc0; --green:#2bc06a;
+  --border:rgba(0,0,0,.09); --border2:rgba(0,0,0,.16);
+  --mono:'DM Mono',monospace; --sans:'Syne',sans-serif;
+  --r:6px; --rl:10px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--off);color:var(--black);font-family:var(--sans);font-size:14px;line-height:1.5}
+body{min-height:100vh}
+::selection{background:var(--black);color:var(--white)}
+input,select,textarea,button{font-family:var(--sans)}
+
+/* ── SETUP ── */
+#setup{position:fixed;inset:0;background:var(--white);display:flex;align-items:center;justify-content:center;z-index:9999}
+.sbox{width:100%;max-width:460px;padding:44px 36px;border:1px solid var(--border2);border-radius:var(--rl)}
+.sbox-logo{margin-bottom:32px}.sbox-logo img{height:28px;display:block}
+.sbox h2{font-size:20px;font-weight:700;letter-spacing:-.01em;margin-bottom:4px}
+.sbox p{font-size:12px;color:var(--g500);font-family:var(--mono);margin-bottom:28px}
+.sf{margin-bottom:16px}
+.sf label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);display:block;margin-bottom:5px;font-family:var(--mono)}
+.sf input{width:100%;padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);font-size:12px;font-family:var(--mono);background:var(--off);outline:none;color:var(--black);transition:border-color .15s}
+.sf input:focus{border-color:var(--black);background:var(--white)}
+.sf .hint{font-size:11px;color:var(--g400);margin-top:4px;font-family:var(--mono)}
+.sbtn{width:100%;padding:12px;background:var(--black);color:var(--white);border:none;border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer;margin-top:4px;transition:opacity .15s}
+.sbtn:hover{opacity:.82}
+.serr{color:var(--red);font-size:11px;font-family:var(--mono);margin-top:6px;display:none}
+.sdiv{height:1px;background:var(--border);margin:20px 0}
+.sdemo{font-size:11px;color:var(--g400);font-family:var(--mono)}
+.sdemo a{color:var(--black);cursor:pointer;text-decoration:underline}
+
+/* ── SCAN LANDING (mobile full-screen) ── */
+#scan-landing{display:none;position:fixed;inset:0;background:var(--black);z-index:8000;flex-direction:column;align-items:center;justify-content:center;padding:32px}
+#scan-landing.show{display:flex}
+.scan-logo{margin-bottom:32px}.scan-logo img{height:24px;filter:brightness(0) invert(1)}
+.scan-asset-badge{background:var(--white);color:var(--black);border-radius:var(--rl);padding:20px 28px;text-align:center;width:100%;max-width:340px;margin-bottom:24px}
+.scan-asset-name{font-size:28px;font-weight:800;letter-spacing:-.02em;line-height:1}
+.scan-asset-area{font-size:12px;color:var(--g500);font-family:var(--mono);margin-top:6px}
+.scan-action-btn{width:100%;max-width:340px;padding:16px;background:var(--white);color:var(--black);border:none;border-radius:var(--r);font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px;letter-spacing:.02em}
+.scan-action-btn.secondary{background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);font-weight:500;font-size:13px}
+.scan-history{width:100%;max-width:340px;margin-top:8px}
+.scan-hist-title{font-size:10px;color:rgba(255,255,255,.4);font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.scan-hist-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.08);font-size:12px;color:rgba(255,255,255,.6)}
+.scan-hist-prob{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4)}
+
+/* ── HEADER ── */
+.header{background:var(--black);color:var(--white);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:54px;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(255,255,255,.07)}
+.hlogo img{height:20px;display:block;filter:brightness(0) invert(1)}
+.hnav{display:flex;align-items:center;gap:2px}
+.nb{padding:5px 12px;font-size:12px;font-weight:500;border:1px solid transparent;border-radius:var(--r);background:none;color:rgba(255,255,255,.45);cursor:pointer;transition:all .15s;white-space:nowrap}
+.nb:hover{color:var(--white)}
+.nb.active{background:rgba(255,255,255,.1);color:var(--white);border-color:rgba(255,255,255,.12)}
+.hright{display:flex;align-items:center;gap:8px}
+.shift-pill{display:flex;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:var(--r);padding:3px}
+.spb{padding:4px 12px;font-size:11px;font-weight:600;border:none;background:none;color:rgba(255,255,255,.45);cursor:pointer;border-radius:4px;transition:all .15s}
+.spb.active{background:var(--white);color:var(--black)}
+.conn{display:flex;align-items:center;gap:5px;font-size:10px;color:rgba(255,255,255,.35);font-family:var(--mono)}
+.cdot{width:6px;height:6px;border-radius:50%;background:#555;transition:background .3s}
+.cdot.on{background:var(--green);box-shadow:0 0 6px var(--green)}
+.scan-nav-btn{display:flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:var(--r);color:var(--white);font-size:11px;font-weight:600;cursor:pointer;letter-spacing:.03em}
+.scan-nav-btn svg{width:14px;height:14px}
+
+/* ── STATS ── */
+.stats-bar{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--border);border-bottom:1px solid var(--border)}
+.sc{background:var(--white);padding:14px 18px}
+.sl{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--g400);font-family:var(--mono);margin-bottom:4px}
+.sv{font-size:22px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.sv.danger{color:var(--red)}
+.ss{font-size:10px;color:var(--g400);margin-top:2px;font-family:var(--mono)}
+
+/* ── VIEWS ── */
+.view{display:none;padding:20px;max-width:1440px;margin:0 auto}
+.view.active{display:block}
+
+/* ── SEC HEADER ── */
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.st{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--g500);font-family:var(--mono)}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.fsel{background:var(--white);border:1px solid var(--border2);color:var(--black);font-size:11px;font-family:var(--mono);padding:6px 10px;border-radius:var(--r);cursor:pointer;outline:none}
+
+/* ── TABLE ── */
+.tw{border:1px solid var(--border2);border-radius:var(--rl);overflow:hidden;background:var(--white)}
+table{width:100%;border-collapse:collapse;min-width:1100px}
+thead tr{background:var(--g100)}
+th{padding:9px 11px;text-align:left;font-size:10px;font-weight:600;color:var(--g500);letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--border);white-space:nowrap;font-family:var(--mono)}
+td{padding:9px 11px;font-size:12px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--g100)}
+.erow td{text-align:center;padding:56px;color:var(--g400);font-family:var(--mono);font-size:12px}
+.tag{font-size:10px;font-weight:500;padding:2px 8px;border-radius:4px;font-family:var(--mono);display:inline-block;white-space:nowrap}
+.tag-day{background:#fef3e2;color:#92440f;border:1px solid #fde7c3}
+.tag-night{background:#eff6ff;color:#1d4ed8;border:1px solid #dbeafe}
+.tag-Critical{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+.tag-High{background:#fff7ed;color:#9a3412;border:1px solid #fed7aa}
+.tag-Medium{background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe}
+.tag-Low{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
+.delbtn{background:none;border:none;color:var(--g300);cursor:pointer;padding:3px 6px;border-radius:4px;font-size:12px}
+.delbtn:hover{color:var(--red);background:#fef2f2}
+.stag{font-size:10px;font-family:var(--mono);color:var(--g400)}
+.stag.ok{color:var(--green)}
+.qr-cell{font-size:10px;font-family:var(--mono);color:var(--blue);cursor:pointer;text-decoration:underline}
+
+/* ── FORM ── */
+.fcard{background:var(--white);border:1px solid var(--border2);border-radius:var(--rl);padding:24px}
+.fsec{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--g400);font-family:var(--mono);margin-bottom:12px;padding-bottom:7px;border-bottom:1px solid var(--border);margin-top:4px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:12px}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:12px}
+.fg label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);display:block;margin-bottom:4px;font-family:var(--mono)}
+.req{color:var(--red)}
+.fg input,.fg select,.fg textarea{width:100%;background:var(--off);border:1px solid var(--border2);color:var(--black);font-size:12px;font-family:var(--mono);padding:8px 11px;border-radius:var(--r);outline:none;transition:border-color .15s,background .15s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--black);background:var(--white)}
+.fg textarea{resize:vertical;min-height:64px}
+.fg input.prefilled{background:#f0fdf4;border-color:#bbf7d0;font-weight:500}
+.solcard{background:var(--off);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:12px;border-left:3px solid var(--g300);display:none}
+.solcard.on{display:block}
+.solcard.sev-Critical{border-left-color:var(--red)}
+.solcard.sev-High{border-left-color:var(--orange)}
+.solcard.sev-Medium{border-left-color:var(--blue)}
+.solcard.sev-Low{border-left-color:var(--green)}
+.sol-hd{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.sol-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);font-family:var(--mono)}
+.sol-txt{font-size:12px;line-height:1.7;color:var(--g700);font-family:var(--mono)}
+.sol-note{font-size:11px;color:var(--g400);margin-top:4px;font-style:italic;font-family:var(--mono)}
+.subbtn{width:100%;padding:13px;background:var(--black);color:var(--white);border:none;border-radius:var(--r);font-size:13px;font-weight:700;letter-spacing:.03em;cursor:pointer;transition:opacity .15s}
+.subbtn:hover{opacity:.8}
+.subbtn:disabled{opacity:.35;cursor:not-allowed}
+.ferr{color:var(--red);font-size:11px;font-family:var(--mono);margin-top:7px;display:none}
+.flash{background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;font-size:12px;font-family:var(--mono);padding:10px 13px;border-radius:var(--r);margin-bottom:12px;display:none}
+.scan-indicator{background:#eff6ff;border:1px solid #bfdbfe;border-radius:var(--r);padding:10px 13px;margin-bottom:12px;display:none;align-items:center;gap:8px;font-size:12px;font-family:var(--mono);color:#1e40af}
+.scan-indicator.show{display:flex}
+.scan-pulse{width:8px;height:8px;border-radius:50%;background:#2b5fc0;animation:scanpulse 1s ease infinite}
+@keyframes scanpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+
+/* ── SCANNER INPUT (hidden, traps barcode input) ── */
+#barcode-trap{position:fixed;opacity:0;pointer-events:none;width:1px;height:1px;top:-9999px}
+
+/* ── DASHBOARD ── */
+.dg2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.dcard{background:var(--white);border:1px solid var(--border2);border-radius:var(--rl);padding:18px}
+.dct{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--g400);font-family:var(--mono);margin-bottom:14px}
+.brow{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+.blbl{min-width:130px;font-size:12px;color:var(--g600);font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btrk{flex:1;height:5px;background:var(--g100);border-radius:3px;overflow:hidden}
+.bfil{height:100%;border-radius:3px;background:var(--black);transition:width .5s}
+.bcnt{min-width:24px;text-align:right;font-size:12px;font-weight:600;font-family:var(--mono)}
+.nodata{color:var(--g300);font-size:12px;font-family:var(--mono);padding:18px 0;text-align:center}
+.ii{display:flex;align-items:flex-start;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);gap:10px}
+.ii:last-child{border-bottom:none}
+.ii-m{font-size:13px;font-weight:600}
+.ii-p{font-size:11px;color:var(--g500);font-family:var(--mono);margin-top:1px}
+.ii-r{display:flex;align-items:center;gap:7px;flex-shrink:0}
+
+/* ── QR GENERATOR ── */
+.qr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:14px}
+.qr-card{background:var(--white);border:1px solid var(--border2);border-radius:var(--rl);padding:16px;text-align:center;cursor:pointer;transition:border-color .15s}
+.qr-card:hover{border-color:var(--black)}
+.qr-card canvas{display:block;margin:0 auto 10px}
+.qr-card-name{font-size:11px;font-weight:600;letter-spacing:.04em}
+.qr-card-area{font-size:10px;color:var(--g400);font-family:var(--mono);margin-top:2px}
+.qr-card-url{font-size:9px;color:var(--g300);font-family:var(--mono);margin-top:4px;word-break:break-all}
+.qr-section-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--g400);font-family:var(--mono);margin:20px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.qr-url-banner{background:var(--white);border:1px solid var(--border2);border-radius:var(--r);padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.qr-url-input{flex:1;min-width:200px;padding:8px 11px;border:1px solid var(--border2);border-radius:var(--r);font-size:12px;font-family:var(--mono);background:var(--off);outline:none}
+.qr-url-input:focus{border-color:var(--black);background:var(--white)}
+.qr-gen-btn{padding:8px 16px;background:var(--black);color:var(--white);border:none;border-radius:var(--r);font-size:12px;font-weight:600;cursor:pointer}
+.print-btn{padding:8px 16px;background:var(--off);color:var(--black);border:1px solid var(--border2);border-radius:var(--r);font-size:12px;font-weight:500;cursor:pointer}
+
+/* ── REPORT ── */
+.rwrap{display:grid;grid-template-columns:260px 1fr;gap:14px}
+.rsidebar{display:flex;flex-direction:column;gap:10px}
+.rmeta{background:var(--white);border:1px solid var(--border2);border-radius:var(--rl);padding:16px}
+.rmt{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--g400);font-family:var(--mono);margin-bottom:10px}
+.mr{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;font-family:var(--mono)}
+.mr:last-child{border-bottom:none}
+.mk{color:var(--g400)}
+.mv{font-weight:600}
+.rmain{background:var(--white);border:1px solid var(--border2);border-radius:var(--rl);padding:22px}
+.rmh{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px}
+.rmh-title{font-size:18px;font-weight:700;letter-spacing:-.01em}
+.rmh-sub{font-size:11px;color:var(--g400);font-family:var(--mono);margin-top:3px}
+.genbtn{padding:9px 18px;background:var(--black);color:var(--white);border:none;border-radius:var(--r);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:opacity .15s}
+.genbtn:hover{opacity:.8}
+.genbtn:disabled{opacity:.4;cursor:not-allowed}
+.rbody{background:var(--off);border:1px solid var(--border);border-radius:var(--r);padding:18px;font-size:13px;line-height:1.9;font-family:var(--mono);color:var(--g700);white-space:pre-wrap;min-height:180px}
+
+/* ── BANNER ── */
+.banner{background:#fffbeb;border:1px solid #fde68a;border-radius:var(--r);padding:10px 14px;margin-bottom:14px;font-size:12px;font-family:var(--mono);color:#92400e;display:none;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.banner.show{display:flex}
+.bbtn{background:var(--black);color:var(--white);border:none;padding:5px 12px;border-radius:4px;font-size:11px;cursor:pointer;font-family:var(--mono)}
+
+/* ── ASSET PAGE ── */
+.asset-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:12px}
+.asset-card{background:var(--white);border:1px solid var(--border2);border-radius:var(--rl);padding:14px;cursor:pointer;transition:all .15s;position:relative}
+.asset-card:hover{border-color:var(--black);transform:translateY(-1px)}
+.ac-name{font-size:13px;font-weight:600;margin-bottom:2px}
+.ac-area{font-size:10px;color:var(--g400);font-family:var(--mono)}
+.ac-count{position:absolute;top:10px;right:10px;font-size:10px;font-family:var(--mono);background:var(--g100);padding:2px 6px;border-radius:3px;color:var(--g500)}
+.ac-dot{width:6px;height:6px;border-radius:50%;background:var(--g300);display:inline-block;margin-right:5px}
+.ac-dot.active{background:var(--green)}
+
+@media(max-width:900px){
+  .stats-bar{grid-template-columns:repeat(3,1fr)}
+  .dg2{grid-template-columns:1fr}
+  .rwrap{grid-template-columns:1fr}
+  .g5{grid-template-columns:1fr 1fr}
+  .g4{grid-template-columns:1fr 1fr}
+  .hnav .nb:not(.active){display:none}
+  .qr-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+}
+@media print{
+  .header,.stats-bar,.nb,.hright,.shift-pill,.conn,.scan-nav-btn{display:none!important}
+  .view{padding:0}
+  .qr-card{break-inside:avoid;page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<!-- BARCODE TRAP INPUT - captures scanner keyboard output -->
+<input id="barcode-trap" type="text" autocomplete="off">
+
+<!-- ── SETUP ── -->
+<div id="setup">
+  <div class="sbox">
+    <div class="sbox-logo">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfIAAADcCAYAAACLQCMiAAABCGlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGA8wQAELAYMDLl5JUVB7k4KEZFRCuwPGBiBEAwSk4sLGHADoKpv1yBqL+viUYcLcKakFicD6Q9ArFIEtBxopAiQLZIOYWuA2EkQtg2IXV5SUAJkB4DYRSFBzkB2CpCtkY7ETkJiJxcUgdT3ANk2uTmlyQh3M/Ck5oUGA2kOIJZhKGYIYnBncAL5H6IkfxEDg8VXBgbmCQixpJkMDNtbGRgkbiHEVBYwMPC3MDBsO48QQ4RJQWJRIliIBYiZ0tIYGD4tZ2DgjWRgEL7AwMAVDQsIHG5TALvNnSEfCNMZchhSgSKeDHkMyQx6QJYRgwGDIYMZAKbWPz9HbOBQAAADj0lEQVR4nO3VQQ0AIBDAMMC/58MDH7KkVbDf9szMAgCSzu8AAOCdkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQNgFm/YFtG58L/wAAAAASUVORK5CYII=" alt="BBW">
+    </div>
+    <h2>Maintenance System</h2>
+    <p>Connect your Supabase database to get started</p>
+    <div class="sf">
+      <label>Supabase Project URL</label>
+      <input id="su-url" type="text" placeholder="https://xxxxxxxxxxxx.supabase.co">
+      <div class="hint">Settings → API → Project URL</div>
+    </div>
+    <div class="sf">
+      <label>Supabase Anon Key</label>
+      <input id="su-key" type="text" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+      <div class="hint">Settings → API → anon public key</div>
+    </div>
+    <button class="sbtn" onclick="connectSB()">Connect & Launch</button>
+    <div class="serr" id="serr"></div>
+    <div class="sdiv"></div>
+    <div class="sdemo">No database yet? <a onclick="runDemo()">Run in demo mode</a> (local only) &nbsp;·&nbsp; <a href="https://supabase.com" target="_blank">Create free account →</a></div>
+  </div>
+</div>
+
+<!-- ── SCAN LANDING (shown on QR scan) ── -->
+<div id="scan-landing">
+  <div class="scan-logo"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfIAAADcCAYAAACLQCMiAAABCGlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGA8wQAELAYMDLl5JUVB7k4KEZFRCuwPGBiBEAwSk4sLGHADoKpv1yBqL+viUYcLcKakFicD6Q9ArFIEtBxopAiQLZIOYWuA2EkQtg2IXV5SUAJkB4DYRSFBzkB2CpCtkY7ETkJiJxcUgdT3ANk2uTmlyQh3M/Ck5oUGA2kOIJZhKGYIYnBncAL5H6IkfxEDg8VXBgbmCQixpJkMDNtbGRgkbiHEVBYwMPC3MDBsO48QQ4RJQWJRIliIBYiZ0tIYGD4tZ2DgjWRgEL7AwMAVDQsIHG5TALvNnSEfCNMZchhSgSKeDHkMyQx6QJYRgwGDIYMZAKbWPz9HbOBQAAADj0lEQVR4nO3VQQ0AIBDAMMC/58MDH7KkVbDf9szMAgCSzu8AAOCdkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQNgFm/YFtG58L/wAAAAASUVORK5CYII=" alt="BBW"></div>
+  <div class="scan-asset-badge">
+    <div class="scan-asset-name" id="sl-name">—</div>
+    <div class="scan-asset-area" id="sl-area">Line 1</div>
+  </div>
+  <button class="scan-action-btn" onclick="scanGoToEntry()">＋ Log Work Order</button>
+  <button class="scan-action-btn secondary" onclick="scanGoToHistory()">View Asset History</button>
+  <button class="scan-action-btn secondary" onclick="closeScanLanding()">← Back to Dashboard</button>
+  <div class="scan-history" id="sl-history"></div>
+</div>
+
+<!-- ── MAIN APP ── -->
+<div id="app" style="display:none">
+
+<div class="header">
+  <div class="hlogo"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfIAAADcCAYAAACLQCMiAAABCGlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGA8wQAELAYMDLl5JUVB7k4KEZFRCuwPGBiBEAwSk4sLGHADoKpv1yBqL+viUYcLcKakFicD6Q9ArFIEtBxopAiQLZIOYWuA2EkQtg2IXV5SUAJkB4DYRSFBzkB2CpCtkY7ETkJiJxcUgdT3ANk2uTmlyQh3M/Ck5oUGA2kOIJZhKGYIYnBncAL5H6IkfxEDg8VXBgbmCQixpJkMDNtbGRgkbiHEVBYwMPC3MDBsO48QQ4RJQWJRIliIBYiZ0tIYGD4tZ2DgjWRgEL7AwMAVDQsIHG5TALvNnSEfCNMZchhSgSKeDHkMyQx6QJYRgwGDIYMZAKbWPz9HbOBQAAADj0lEQVR4nO3VQQ0AIBDAMMC/58MDH7KkVbDf9szMAgCSzu8AAOCdkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQJiRA0CYkQNAmJEDQNgFm/YFtG58L/wAAAAASUVORK5CYII=" alt="BBW"></div>
+  <div class="hnav">
+    <button class="nb active" onclick="goTo('log')">Work Log</button>
+    <button class="nb" onclick="goTo('entry')">New Entry</button>
+    <button class="nb" onclick="goTo('assets')">Assets</button>
+    <button class="nb" onclick="goTo('dash')">Dashboard</button>
+    <button class="nb" onclick="goTo('report')">Shift Report</button>
+    <button class="nb" onclick="goTo('qr')">QR Codes</button>
+  </div>
+  <div class="hright">
+    <div class="conn"><div class="cdot" id="cdot"></div><span id="clbl">offline</span></div>
+    <button class="scan-nav-btn" onclick="activateScanMode()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>
+      Scan Asset
+    </button>
+    <div class="shift-pill">
+      <button class="spb active" id="bd" onclick="setShift('Day')">☀ Day</button>
+      <button class="spb" id="bn" onclick="setShift('Night')">🌙 Night</button>
+    </div>
+  </div>
+</div>
+
+<div class="stats-bar">
+  <div class="sc"><div class="sl">Total Entries</div><div class="sv" id="s-tot">0</div><div class="ss">today</div></div>
+  <div class="sc"><div class="sl">Downtime Hrs</div><div class="sv" id="s-dt">0.0</div><div class="ss">accumulated</div></div>
+  <div class="sc"><div class="sl">Critical</div><div class="sv danger" id="s-crit">0</div><div class="ss">priority issues</div></div>
+  <div class="sc"><div class="sl">Day Shift</div><div class="sv" id="s-day">0</div><div class="ss">entries</div></div>
+  <div class="sc"><div class="sl">Night Shift</div><div class="sv" id="s-night">0</div><div class="ss">entries</div></div>
+  <div class="sc"><div class="sl">Assets</div><div class="sv" id="s-assets">0</div><div class="ss">affected</div></div>
+</div>
+
+<!-- WORK LOG -->
+<div class="view active" id="view-log">
+  <div class="banner" id="db-banner">
+    <span id="db-msg">⚠ Running in demo mode — data is stored locally only.</span>
+    <button class="bbtn" onclick="document.getElementById('setup').style.display='flex';document.getElementById('app').style.display='none'">Connect DB</button>
+  </div>
+  <div class="sh">
+    <span class="st">Work Log — <span id="log-date"></span></span>
+    <div class="filters">
+      <select class="fsel" id="fil-shift" onchange="renderTable()"><option value="">All Shifts</option><option>Day</option><option>Night</option></select>
+      <select class="fsel" id="fil-machine" onchange="renderTable()"><option value="">All Assets</option></select>
+      <select class="fsel" id="fil-priority" onchange="renderTable()"><option value="">All Priorities</option><option>Critical</option><option>High</option><option>Medium</option><option>Low</option></select>
+      <button class="fsel" style="cursor:pointer;background:var(--black);color:var(--white);border-color:var(--black)" onclick="refreshEntries()">↻ Refresh</button>
+    </div>
+  </div>
+  <div class="tw"><table>
+    <thead><tr>
+      <th>#</th><th>Shift</th><th>Start</th><th>End</th><th>DT Hrs</th>
+      <th>Technician</th><th>Asset ID</th><th>Machine</th>
+      <th>Issue Category</th><th>Problem</th><th>Area</th>
+      <th>Priority</th><th>Work Type</th><th>Description</th><th>Sync</th><th></th>
+    </tr></thead>
+    <tbody id="log-body"></tbody>
+  </table></div>
+</div>
+
+<!-- NEW ENTRY -->
+<div class="view" id="view-entry">
+  <div class="scan-indicator" id="scan-ind">
+    <div class="scan-pulse"></div>
+    <span id="scan-ind-msg">Asset scanned — machine pre-filled. Complete the form below.</span>
+  </div>
+  <div class="flash" id="entry-flash"></div>
+  <div class="fcard">
+    <div class="fsec">Shift & Technician</div>
+    <div class="g5">
+      <div class="fg"><label>Date <span class="req">*</span></label><input type="date" id="f-date"></div>
+      <div class="fg"><label>Technician <span class="req">*</span></label><input type="text" id="f-tech" placeholder="Full name"></div>
+      <div class="fg"><label>Start Time</label><input type="time" id="f-start"></div>
+      <div class="fg"><label>End Time</label><input type="time" id="f-end"></div>
+      <div class="fg"><label>Downtime (hrs)</label><input type="number" id="f-dt" step="0.25" min="0" placeholder="0.00"></div>
+    </div>
+    <div class="fsec">Asset & Problem</div>
+    <div class="g4">
+      <div class="fg"><label>Asset ID</label><input type="text" id="f-asset" placeholder="e.g. FILLER"></div>
+      <div class="fg"><label>Machine / Asset <span class="req">*</span></label>
+        <select id="f-machine" onchange="machineChanged()">
+          <option value="">Select machine...</option>
+          <optgroup label="── Line 1 ──">
+            <option>Depalettizer</option><option>ECI</option><option>Air Rinser</option>
+            <option>Filler</option><option>Seamer</option><option>TAPTONE</option>
+            <option>Checkmat 1</option><option>Checkmat 2</option><option>Pasteurizer</option>
+            <option>Drying Tunnel 1</option><option>Drying Tunnel 2</option><option>Variopac</option>
+            <option>CSW</option><option>RA J Meridian</option><option>Palletizer</option>
+            <option>Logopak</option><option>Lantech Wrapper</option><option>Varioclean</option>
+            <option>Line Control #1</option><option>Line Control #2</option>
+            <option>Labeler #1</option><option>Labeler #2</option><option>Label Camera</option>
+            <option>Videojets</option><option>Drum Fans</option>
+          </optgroup>
+          <optgroup label="── Utilities ──">
+            <option>Boiler</option><option>Boiler Tank Feed Pump</option>
+            <option>Glycol</option><option>Air</option><option>CO2</option><option>Electricity</option>
+          </optgroup>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="fg"><label>Specific Problem <span class="req">*</span></label>
+        <select id="f-problem" onchange="problemChanged()"><option value="">Select machine first...</option></select>
+      </div>
+      <div class="fg"><label>Issue Category</label>
+        <select id="f-cat">
+          <option value="">Select...</option>
+          <option>Mechanical</option><option>Electrical</option><option>Pneumatic</option>
+          <option>Hydraulic</option><option>Controls / PLC</option><option>Sensor / Inspection</option>
+          <option>Lubrication</option><option>Cleaning / Hygiene</option><option>Changeover</option>
+          <option>Calibration</option><option>Utility</option><option>Packaging Material</option><option>Other</option>
+        </select>
+      </div>
+    </div>
+    <div id="solcard" class="solcard">
+      <div class="sol-hd"><span class="sol-lbl">Recommended Solution</span><span id="sev-tag" class="tag"></span></div>
+      <div class="sol-txt" id="sol-txt"></div>
+      <div class="sol-note" id="sol-note"></div>
+    </div>
+    <div class="g3">
+      <div class="fg"><label>Priority</label>
+        <select id="f-priority"><option value="">Select...</option><option>Critical</option><option>High</option><option>Medium</option><option>Low</option></select>
+      </div>
+      <div class="fg"><label>Work Type</label>
+        <select id="f-wtype"><option value="">Select...</option><option>Corrective</option><option>Preventive</option><option>Emergency</option><option>Inspection</option><option>Changeover</option><option>Calibration</option><option>Cleaning</option><option>Lubrication</option></select>
+      </div>
+      <div class="fg"><label>Area / Zone</label>
+        <select id="f-area"><option value="">Select...</option><option>Depal / Infeed</option><option>Can Line</option><option>Filler / Seamer</option><option>Inspection</option><option>Pasteurizer</option><option>Labeller / Coder</option><option>Packaging / Variopac</option><option>Palletizer / Conveyor</option><option>Utilities</option><option>Refrigeration</option><option>General</option></select>
+      </div>
+    </div>
+    <div class="fg" style="margin-bottom:14px">
+      <label>Description / Findings & Comments</label>
+      <textarea id="f-desc" placeholder="Actions taken, parts used, root cause, follow-up required..."></textarea>
+    </div>
+    <button class="subbtn" id="subbtn" onclick="addEntry()">Add to Work Log</button>
+    <div class="ferr" id="ferr">Required: Date, Technician, Machine, Problem.</div>
+  </div>
+</div>
+
+<!-- ASSETS VIEW -->
+<div class="view" id="view-assets">
+  <div class="sh">
+    <span class="st">Asset Registry — Line 1 & Utilities</span>
+    <div class="filters">
+      <select class="fsel" id="fil-area-assets" onchange="renderAssets()">
+        <option value="">All Areas</option>
+        <option>Line 1</option><option>Utilities</option>
+      </select>
+    </div>
+  </div>
+  <div class="asset-grid" id="asset-grid"></div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="view" id="view-dash">
+  <div class="dg2">
+    <div class="dcard"><div class="dct">Top Assets by Work Orders</div><div id="m-bars"><div class="nodata">No entries yet.</div></div></div>
+    <div class="dcard"><div class="dct">Work Type Breakdown</div><div id="w-bars"><div class="nodata">No entries yet.</div></div></div>
+    <div class="dcard"><div class="dct">Priority Breakdown</div><div id="p-bars"><div class="nodata">No entries yet.</div></div></div>
+    <div class="dcard"><div class="dct">Issue Category</div><div id="c-bars"><div class="nodata">No entries yet.</div></div></div>
+  </div>
+  <div class="dcard" style="background:var(--white);border:1px solid var(--border2);border-radius:var(--rl);padding:18px">
+    <div class="dct">All Issues — Sorted by Priority</div>
+    <div id="issue-list"></div>
+  </div>
+</div>
+
+<!-- SHIFT REPORT -->
+<div class="view" id="view-report">
+  <div class="rwrap">
+    <div class="rsidebar">
+      <div class="rmeta"><div class="rmt">Shift Summary</div><div id="rpt-sum"></div></div>
+      <div class="rmeta"><div class="rmt">Critical & High</div><div id="rpt-crit"></div></div>
+    </div>
+    <div class="rmain">
+      <div class="rmh">
+        <div><div class="rmh-title">End-of-Shift Report</div><div class="rmh-sub" id="rpt-date"></div></div>
+        <button class="genbtn" id="genbtn" onclick="generateReport()">Generate Report</button>
+      </div>
+      <div class="rbody" id="rbody">Click "Generate Report" to create a full AI-written shift narrative — root causes, recurring issues, downtime analysis, and handover notes for the next shift.</div>
+    </div>
+  </div>
+</div>
+
+<!-- QR CODES -->
+<div class="view" id="view-qr">
+  <div class="sh"><span class="st">QR Code Generator — All Assets</span></div>
+  <div class="qr-url-banner">
+    <input class="qr-url-input" id="qr-base-url" placeholder="https://your-app.netlify.app" value="">
+    <button class="qr-gen-btn" onclick="generateAllQR()">Generate QR Codes</button>
+    <button class="print-btn" onclick="window.print()">🖨 Print All</button>
+  </div>
+  <div id="qr-hint" style="font-size:11px;color:var(--g400);font-family:var(--mono);margin-bottom:4px">Enter your deployed app URL above, then click Generate. Each QR code will route directly to that asset's work order form when scanned.</div>
+  <div id="qr-output"></div>
+</div>
+
+</div><!-- end #app -->
+
+<!-- QR.js library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+// ── ASSET REGISTRY ──
+const ASSETS = [
+  // Line 1
+  {id:'DEPALETTIZER', name:'Depalettizer', area:'Line 1', zone:'Depal / Infeed'},
+  {id:'ECI', name:'ECI', area:'Line 1', zone:'Can Line'},
+  {id:'AIR-RINSER', name:'Air Rinser', area:'Line 1', zone:'Can Line'},
+  {id:'FILLER', name:'Filler', area:'Line 1', zone:'Filler / Seamer'},
+  {id:'SEAMER', name:'Seamer', area:'Line 1', zone:'Filler / Seamer'},
+  {id:'TAPTONE', name:'TAPTONE', area:'Line 1', zone:'Inspection'},
+  {id:'CHECKMAT-1', name:'Checkmat 1', area:'Line 1', zone:'Inspection'},
+  {id:'CHECKMAT-2', name:'Checkmat 2', area:'Line 1', zone:'Inspection'},
+  {id:'PASTEURIZER', name:'Pasteurizer', area:'Line 1', zone:'Pasteurizer'},
+  {id:'DRYING-TUNNEL-1', name:'Drying Tunnel 1', area:'Line 1', zone:'Pasteurizer'},
+  {id:'DRYING-TUNNEL-2', name:'Drying Tunnel 2', area:'Line 1', zone:'Pasteurizer'},
+  {id:'VARIOPAC', name:'Variopac', area:'Line 1', zone:'Packaging / Variopac'},
+  {id:'CSW', name:'CSW', area:'Line 1', zone:'Packaging / Variopac'},
+  {id:'RA-J-MERIDIAN', name:'RA J Meridian', area:'Line 1', zone:'Packaging / Variopac'},
+  {id:'PALLETIZER', name:'Palletizer', area:'Line 1', zone:'Palletizer / Conveyor'},
+  {id:'LOGOPAK', name:'Logopak', area:'Line 1', zone:'Labeller / Coder'},
+  {id:'LANTECH-WRAPPER', name:'Lantech Wrapper', area:'Line 1', zone:'Palletizer / Conveyor'},
+  {id:'VARIOCLEAN', name:'Varioclean', area:'Line 1', zone:'General'},
+  {id:'LINE-CONTROL-1', name:'Line Control #1', area:'Line 1', zone:'Can Line'},
+  {id:'LINE-CONTROL-2', name:'Line Control #2', area:'Line 1', zone:'Can Line'},
+  {id:'LABELER-1', name:'Labeler #1', area:'Line 1', zone:'Labeller / Coder'},
+  {id:'LABELER-2', name:'Labeler #2', area:'Line 1', zone:'Labeller / Coder'},
+  {id:'LABEL-CAMERA', name:'Label Camera', area:'Line 1', zone:'Inspection'},
+  {id:'VIDEOJETS', name:'Videojets', area:'Line 1', zone:'Labeller / Coder'},
+  {id:'DRUM-FANS', name:'Drum Fans', area:'Line 1', zone:'General'},
+  // Utilities
+  {id:'BOILER', name:'Boiler', area:'Utilities', zone:'Utilities'},
+  {id:'BOILER-FEED-PUMP', name:'Boiler Tank Feed Pump', area:'Utilities', zone:'Utilities'},
+  {id:'GLYCOL', name:'Glycol', area:'Utilities', zone:'Refrigeration'},
+  {id:'AIR', name:'Air', area:'Utilities', zone:'Utilities'},
+  {id:'CO2', name:'CO2', area:'Utilities', zone:'Utilities'},
+  {id:'ELECTRICITY', name:'Electricity', area:'Utilities', zone:'Utilities'},
+];
+
+// Asset ID → machine name map
+const ASSET_TO_MACHINE = {};
+ASSETS.forEach(a => ASSET_TO_MACHINE[a.id] = a.name);
+
+// Machine name → asset
+const MACHINE_TO_ASSET = {};
+ASSETS.forEach(a => MACHINE_TO_ASSET[a.name] = a);
+
+// ── MACHINE PROBLEM DATA ──
+const MDATA = {
+  "Depalettizer":[
+    {p:"5010 — Uneven tower / pallet issue",s:"Adjust tower (one push). Press in protruding cans before releasing. Ensure tower is perfect before cutting.",sev:"Low"},
+    {p:"Sequence issue",s:"Needs sequence reboot — recurring issue requiring programming specialist.",sev:"Medium",r:"Easy fix during overhaul. Needs programming specialist."}
+  ],
+  "ECI":[
+    {p:"Base reject",s:"Access can base reflection and edit parameters for each program.",sev:"Critical"},
+    {p:"Can mechanical parameters off",s:"Check default values — some are off. Center can on screen to reduce kick-outs.",sev:"Low",r:"Off-center can causes excessive kick-outs."}
+  ],
+  "Line Control #1":[{p:"Conveyor turns off when Depalettizer stops",s:"Revert LMS programming change to avoid unnecessary downtime.",sev:"Low"}],
+  "Line Control #2":[{p:"Conveyor turns off when Depalettizer stops",s:"Revert LMS programming change to avoid unnecessary downtime.",sev:"Low"}],
+  "Filler":[
+    {p:"Cans exploding randomly (PC products)",s:"Check pressurization for this program — no issues with other products.",sev:"Medium"},
+    {p:"Infeed guide preset setups wrong",s:"Recalibrate preset screws for both sleek and standard cans.",sev:"Medium"},
+    {p:"Stainless steel track needs replacement",s:"Replace with plastic track — some products cause issues through existing track.",sev:"Critical"},
+    {p:"Infeed twisters need attention",s:"Regular cleaning. Replace if beyond service life.",sev:"Low"}
+  ],
+  "Seamer":[{p:"Lids stuck on chain / servo fault",s:"After seamer jams, clear all lids from under chain before restarting.",sev:"High"}],
+  "Drying Tunnel 1":[{p:"Control cabinet cooling failure",s:"Refrigerant refill and leak inspection required.",sev:"High"}],
+  "Drying Tunnel 2":[{p:"Control cabinet cooling failure",s:"Refrigerant refill and leak inspection required.",sev:"High"}],
+  "Air Rinser":[{p:"Motor side on top always dirty",s:"Weekly cleaning required.",sev:"Medium"}],
+  "Variopac":[
+    {p:"Changeover adjustments not standardized",s:"Update mechanical parameters changed since overhaul.",sev:"High"},
+    {p:"Open flap on service side after flap closer",s:"Move guide in front of glue station back slightly.",sev:"Low"},
+    {p:"Zevia tray issues (curved / brittle / missing crease)",s:"Straighten bent trays before loading. Brittleness from low storage moisture.",sev:"Medium"}
+  ],
+  "Videojets":[{p:"Gutter fault",s:"Periodic cleaning required. Clean before every production startup.",sev:"Low"}],
+  "Labeler #1":[{p:"Missing label",s:"Adjust label stop after every label roll change.",sev:"Low"}],
+  "Labeler #2":[{p:"Missing label",s:"Adjust label stop after every label roll change.",sev:"Low"}],
+  "Palletizer":[
+    {p:"Layers hitting pallet after changeover",s:"Monitor until 1 full pallet completes after every changeover.",sev:"Medium"},
+    {p:"Reset needed when downstream causes backup",s:"Programming issue — needs investigation.",sev:"Low"},
+    {p:"Pallet stuck before turning conveyor",s:"Move pallet sensor back slightly.",sev:"Low"}
+  ],
+  "CSW":[{p:"Sleeve length issue (short or long)",s:"Change setpoint when short or longer sleeves are present.",sev:"High"}],
+  "RA J Meridian":[{p:"Loader side open flap / carton forming issue",s:"Fabricate better flap-folding guide before flap closer.",sev:"Medium"}],
+  "Pasteurizer":[
+    {p:"Sweeper in wrong position",s:"Monitor sweeper during operation — going past range causes mess.",sev:"Low"},
+    {p:"Heat exchanger — excessive calcium buildup",s:"Increase boil-out frequency. Use recommended chemicals.",sev:"Medium"}
+  ],
+  "TAPTONE":[{p:"False rejects",s:"Check sensitivity parameters and recalibrate for current product.",sev:"Medium"}],
+  "Checkmat 1":[{p:"False rejects / missed cans",s:"Recalibrate detection threshold. Check sensor alignment.",sev:"Medium"}],
+  "Checkmat 2":[{p:"False rejects / missed cans",s:"Recalibrate detection threshold. Check sensor alignment.",sev:"Medium"}],
+  "Boiler":[
+    {p:"Low water level",s:"Check feed pump operation. Inspect float valve. Top up if needed.",sev:"High"},
+    {p:"High pressure alarm",s:"Check pressure relief valve. Reduce firing rate. Inspect steam traps.",sev:"Critical"},
+    {p:"Scale buildup",s:"Schedule chemical descaling. Increase blowdown frequency.",sev:"Medium"}
+  ],
+  "Boiler Tank Feed Pump":[
+    {p:"Pump not priming",s:"Check suction line for air locks. Inspect foot valve.",sev:"High"},
+    {p:"Low flow rate",s:"Check impeller wear. Inspect filter/strainer.",sev:"Medium"}
+  ],
+  "Glycol":[
+    {p:"Low glycol level",s:"Check for leaks. Top up glycol concentration. Test antifreeze protection level.",sev:"High"},
+    {p:"Pump cavitation",s:"Check suction pressure. Inspect filter. Purge air from system.",sev:"Medium"}
+  ],
+  "CO2":[
+    {p:"Low pressure",s:"Check cylinder levels. Inspect regulator and lines for leaks.",sev:"High"},
+    {p:"Pressure fluctuation",s:"Check regulator setting. Inspect non-return valves.",sev:"Medium"}
+  ],
+};
+
+// ── STATE ──
+let entries=[], currentShift='Day', entryNums={Day:0,Night:0};
+let sbUrl='', sbKey='', demoMode=false;
+let scannedAsset=null;
+let barcodeBuffer='', barcodeTimer=null;
+
+const $=id=>document.getElementById(id);
+
+// ── BARCODE SCANNER TRAP ──
+// Intercepts keyboard input from a Bluetooth/USB barcode scanner
+// Scanners type quickly in sequence then send Enter — we detect this
+document.addEventListener('keydown', e=>{
+  // Only trap if not in a text field
+  const tag = document.activeElement.tagName;
+  if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT') return;
+
+  if(e.key==='Enter'){
+    if(barcodeBuffer.length>2){
+      handleBarcodeInput(barcodeBuffer.trim().toUpperCase());
+    }
+    barcodeBuffer='';
+    clearTimeout(barcodeTimer);
+    return;
+  }
+  if(e.key.length===1){
+    barcodeBuffer+=e.key;
+    clearTimeout(barcodeTimer);
+    barcodeTimer=setTimeout(()=>{barcodeBuffer='';},300);
+  }
+});
+
+// Also trap the hidden input (for mobile scanners that focus an input)
+$('barcode-trap').addEventListener('change', function(){
+  const v=this.value.trim().toUpperCase();
+  if(v) handleBarcodeInput(v);
+  this.value='';
+});
+
+function handleBarcodeInput(code){
+  // Try to match against asset IDs (exact or partial)
+  let asset = ASSETS.find(a=>a.id===code || a.name.toUpperCase()===code);
+  if(!asset){
+    // Try partial match
+    asset=ASSETS.find(a=>code.includes(a.id)||a.id.includes(code));
+  }
+  if(asset){
+    openScanLanding(asset);
+  } else {
+    // Unknown code — still pre-fill what we can
+    openScanLanding({id:code, name:code, area:'Unknown', zone:'General'});
+  }
+}
+
+function openScanLanding(asset){
+  scannedAsset=asset;
+  $('sl-name').textContent=asset.name;
+  $('sl-area').textContent=asset.area+' · '+asset.zone;
+
+  // Show last 3 entries for this asset
+  const hist=entries.filter(e=>e.machine===asset.name||e.asset===asset.id).slice(-3).reverse();
+  const hEl=$('sl-history');
+  if(hist.length){
+    hEl.innerHTML=`<div class="scan-hist-title">Recent on this asset</div>`+
+      hist.map(e=>`<div class="scan-hist-item">
+        <div>
+          <div>${e.problem}</div>
+          <div class="scan-hist-prob">${e.tech} · ${e.date}</div>
+        </div>
+        <span class="tag tag-${e.priority||'Low'}">${e.priority||'?'}</span>
+      </div>`).join('');
+  } else {
+    hEl.innerHTML='<div class="scan-hist-title" style="margin-top:12px">No recent history for this asset</div>';
+  }
+  $('scan-landing').classList.add('show');
+}
+
+function closeScanLanding(){
+  $('scan-landing').classList.remove('show');
+  scannedAsset=null;
+}
+
+function scanGoToEntry(){
+  $('scan-landing').classList.remove('show');
+  // Pre-fill the form with the scanned asset
+  if(scannedAsset){
+    prefillFromAsset(scannedAsset);
+  }
+  goTo('entry');
+}
+
+function scanGoToHistory(){
+  $('scan-landing').classList.remove('show');
+  if(scannedAsset){
+    $('fil-machine').value=scannedAsset.name;
+    renderTable();
+  }
+  goTo('log');
+}
+
+function prefillFromAsset(asset){
+  // Set machine dropdown
+  const mSel=$('f-machine');
+  for(let o of mSel.options){
+    if(o.value===asset.name){mSel.value=asset.name;break;}
+  }
+  $('f-asset').value=asset.id;
+  $('f-asset').classList.add('prefilled');
+  machineChanged();
+  // Set area
+  if(asset.zone) $('f-area').value=asset.zone;
+  // Show scan indicator
+  const ind=$('scan-ind');
+  $('scan-ind-msg').textContent=`Asset scanned: ${asset.name} (${asset.id}) — machine pre-filled. Complete the form below.`;
+  ind.classList.add('show');
+  setTimeout(()=>ind.classList.remove('show'),8000);
+}
+
+function activateScanMode(){
+  // Focus the hidden trap and show instructions
+  $('barcode-trap').focus();
+  alert('Scan mode active.\n\nPoint your barcode scanner at any asset tag. The form will open automatically.\n\nOn mobile: your camera scanner app will open a URL — make sure to copy-paste the full URL into your scanner app.');
+}
+
+// ── URL ROUTING (QR codes link to ?asset=ID) ──
+function checkUrlParams(){
+  const params=new URLSearchParams(window.location.search);
+  const assetId=params.get('asset');
+  if(assetId){
+    const asset=ASSETS.find(a=>a.id===assetId.toUpperCase())||{id:assetId,name:assetId,area:'Line 1',zone:'General'};
+    // Wait for app to load then open scan landing
+    setTimeout(()=>{
+      if($('app').style.display!=='none'){
+        openScanLanding(asset);
+      } else {
+        // Store and open after login
+        window._pendingAsset=asset;
+      }
+    },500);
+  }
+}
+
+// ── SETUP ──
+function connectSB(){
+  const url=$('su-url').value.trim().replace(/\/$/,'');
+  const key=$('su-key').value.trim();
+  if(!url||!key){showErr('Please enter both URL and key.');return;}
+  if(!url.includes('supabase.co')){showErr('URL should be in format https://xxxx.supabase.co');return;}
+  sbUrl=url; sbKey=key; demoMode=false;
+  try{localStorage.setItem('bbw_sb_url',url);localStorage.setItem('bbw_sb_key',key);}catch(e){}
+  launchApp();
+  createTableIfNeeded().then(()=>refreshEntries());
+}
+
+function runDemo(){
+  demoMode=true; sbUrl=''; sbKey='';
+  launchApp();
+  const b=$('db-banner'); b.classList.add('show');
+  try{const s=localStorage.getItem('bbw_entries');if(s){entries=JSON.parse(s);updateAll();}}catch(e){}
+}
+
+function showErr(m){const e=$('serr');e.textContent=m;e.style.display='block';}
+
+function launchApp(){
+  $('setup').style.display='none';
+  $('app').style.display='block';
+  $('f-date').value=new Date().toISOString().split('T')[0];
+  $('log-date').textContent=new Date().toLocaleDateString('en-CA',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  $('rpt-date').textContent='BBW Krones Line 1 · '+new Date().toLocaleDateString('en-CA',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  setConn(!demoMode);
+  renderTable();
+  renderAssets();
+  // Handle pending QR scan
+  if(window._pendingAsset){openScanLanding(window._pendingAsset);window._pendingAsset=null;}
+}
+
+// Auto-connect if creds stored
+(function(){
+  try{
+    const url=localStorage.getItem('bbw_sb_url');
+    const key=localStorage.getItem('bbw_sb_key');
+    if(url&&key){$('su-url').value=url;$('su-key').value=key;}
+  }catch(e){}
+  checkUrlParams();
+})();
+
+// ── SUPABASE ──
+async function sbFetch(path,opts={}){
+  const res=await fetch(sbUrl+'/rest/v1/'+path,{
+    ...opts,
+    headers:{'apikey':sbKey,'Authorization':'Bearer '+sbKey,'Content-Type':'application/json','Prefer':opts.prefer||'return=representation',...(opts.headers||{})}
+  });
+  if(!res.ok){const t=await res.text();throw new Error(t);}
+  return res.status===204?null:res.json();
+}
+
+const CREATE_SQL=`create table if not exists bbw_maintenance (
+  id bigint generated by default as identity primary key,
+  created_at timestamptz default now(),
+  entry_num int, shift text, entry_date text,
+  start_time text, end_time text, downtime_hrs numeric,
+  technician text, asset_id text, machine text, problem text,
+  category text, priority text, work_type text, area text, description text
+);
+alter table bbw_maintenance enable row level security;
+create policy "public read" on bbw_maintenance for select using (true);
+create policy "public insert" on bbw_maintenance for insert with check (true);
+create policy "public delete" on bbw_maintenance for delete using (true);`;
+
+async function createTableIfNeeded(){
+  try{
+    await sbFetch('bbw_maintenance?limit=1',{headers:{'Range':'0-0'}});
+    setConn(true);
+  }catch(e){
+    setConn(false);
+    const b=$('db-banner');
+    b.innerHTML=`⚠ Table not found. <a href="#" onclick="navigator.clipboard?.writeText(CREATE_SQL_GLOBAL);alert('SQL copied!')">Copy SQL</a> → run in Supabase SQL Editor → refresh.
+    <button class="bbtn" onclick="refreshEntries()">Refresh</button>`;
+    b.classList.add('show');
+    window.CREATE_SQL_GLOBAL=CREATE_SQL;
+  }
+}
+
+async function refreshEntries(){
+  if(demoMode){renderTable();return;}
+  try{
+    const today=new Date().toISOString().split('T')[0];
+    const data=await sbFetch(`bbw_maintenance?entry_date=eq.${today}&order=created_at.asc`);
+    entries=(data||[]).map(r=>({
+      id:r.id,num:r.entry_num,shift:r.shift,date:r.entry_date,
+      start:r.start_time,end:r.end_time,dt:r.downtime_hrs||0,
+      tech:r.technician,asset:r.asset_id,machine:r.machine,
+      problem:r.problem,category:r.category,priority:r.priority,
+      wtype:r.work_type,area:r.area,desc:r.description,synced:true
+    }));
+    entryNums.Day=entries.filter(e=>e.shift==='Day').length;
+    entryNums.Night=entries.filter(e=>e.shift==='Night').length;
+    setConn(true);
+    updateAll();
+  }catch(err){setConn(false);console.error(err);}
+}
+
+async function saveToDB(entry){
+  if(demoMode)return;
+  try{
+    const payload={
+      entry_num:entry.num,shift:entry.shift,entry_date:entry.date,
+      start_time:entry.start||null,end_time:entry.end||null,
+      downtime_hrs:entry.dt||null,technician:entry.tech,
+      asset_id:entry.asset||null,machine:entry.machine,problem:entry.problem,
+      category:entry.category||null,priority:entry.priority||null,
+      work_type:entry.wtype||null,area:entry.area||null,description:entry.desc||null
+    };
+    const res=await sbFetch('bbw_maintenance',{method:'POST',body:JSON.stringify(payload)});
+    if(res&&res[0]){entry.id=res[0].id;entry.synced=true;}
+    setConn(true);
+  }catch(err){console.error(err);entry.synced=false;}
+}
+
+async function deleteFromDB(entry){
+  if(demoMode||!entry.synced)return;
+  try{await sbFetch(`bbw_maintenance?id=eq.${entry.id}`,{method:'DELETE',prefer:'return=minimal'});}catch(e){}
+}
+
+// ── NAV ──
+function goTo(name){
+  document.querySelectorAll('.nb').forEach((b,i)=>b.classList.toggle('active',['log','entry','assets','dash','report','qr'][i]===name));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  $('view-'+name).classList.add('active');
+  if(name==='dash')renderDash();
+  if(name==='report')renderReportMeta();
+  if(name==='assets')renderAssets();
+}
+
+function setShift(s){
+  currentShift=s;
+  $('bd').classList.toggle('active',s==='Day');
+  $('bn').classList.toggle('active',s==='Night');
+}
+
+function setConn(c){
+  $('cdot').className='cdot'+(c?' on':'');
+  $('clbl').textContent=c?'live':'offline';
+}
+
+// ── FORM ──
+function machineChanged(){
+  const m=$('f-machine').value,p=$('f-problem');
+  p.innerHTML='<option value="">Select problem...</option>';
+  $('solcard').className='solcard';
+  if(MDATA[m]) MDATA[m].forEach((d,i)=>{const o=document.createElement('option');o.value=i;o.textContent=d.p;p.appendChild(o);});
+  const co=document.createElement('option');co.value='custom';co.textContent='Other / not listed';p.appendChild(co);
+  // Auto-fill asset ID if not already set
+  const assetEl=$('f-asset');
+  if(!assetEl.value){
+    const asset=MACHINE_TO_ASSET[m];
+    if(asset){assetEl.value=asset.id;}
+  }
+}
+
+function problemChanged(){
+  const m=$('f-machine').value,v=$('f-problem').value,card=$('solcard');
+  if(MDATA[m]&&v!==''&&v!=='custom'){
+    const d=MDATA[m][parseInt(v)];
+    $('sol-txt').textContent=d.s;
+    $('sol-note').textContent=d.r?'Note: '+d.r:'';
+    const st=$('sev-tag');st.textContent=d.sev;st.className='tag tag-'+d.sev;
+    card.className='solcard on sev-'+d.sev;
+    if(!$('f-priority').value)$('f-priority').value=d.sev;
+  }else{card.className='solcard';}
+}
+
+async function addEntry(){
+  const date=$('f-date').value,tech=$('f-tech').value.trim();
+  const machine=$('f-machine').value,prob=$('f-problem').value;
+  $('ferr').style.display='none';
+  if(!date||!tech||!machine||!prob){$('ferr').style.display='block';return;}
+  entryNums[currentShift]++;
+  const pSel=$('f-problem');
+  const probText=prob==='custom'?'Other / not listed':(MDATA[machine]?MDATA[machine][parseInt(prob)]?.p||pSel.options[pSel.selectedIndex]?.text:'Other');
+  const entry={
+    id:'local_'+Date.now(),num:entryNums[currentShift],shift:currentShift,
+    date,tech,start:$('f-start').value,end:$('f-end').value,
+    dt:parseFloat($('f-dt').value)||0,asset:$('f-asset').value.trim(),
+    machine,problem:probText,category:$('f-cat').value,
+    priority:$('f-priority').value,wtype:$('f-wtype').value,
+    area:$('f-area').value,desc:$('f-desc').value.trim(),synced:false
+  };
+  entries.push(entry);
+  if(demoMode){try{localStorage.setItem('bbw_entries',JSON.stringify(entries));}catch(e){}}
+  const btn=$('subbtn');btn.disabled=true;btn.textContent='Saving...';
+  await saveToDB(entry);
+  btn.disabled=false;btn.textContent='Add to Work Log';
+  updateAll();clearForm();
+  const f=$('entry-flash');
+  f.textContent=`✓ Logged: ${machine} — ${probText} (${currentShift} Shift)${entry.synced?' · synced to database':' · saved locally'}`;
+  f.style.display='block';
+  setTimeout(()=>f.style.display='none',5000);
+  goTo('log');
+}
+
+function clearForm(){
+  ['f-tech','f-start','f-end','f-dt','f-asset','f-desc'].forEach(id=>$(id).value='');
+  ['f-machine','f-problem','f-cat','f-priority','f-wtype','f-area'].forEach(id=>$(id).value='');
+  $('f-date').value=new Date().toISOString().split('T')[0];
+  $('f-problem').innerHTML='<option value="">Select machine first...</option>';
+  $('solcard').className='solcard';
+  $('f-asset').classList.remove('prefilled');
+  scannedAsset=null;
+}
+
+async function deleteEntry(idx){
+  const e=entries[idx];
+  await deleteFromDB(e);
+  entries.splice(idx,1);
+  if(demoMode){try{localStorage.setItem('bbw_entries',JSON.stringify(entries));}catch(e){}}
+  updateAll();
+}
+
+function updateAll(){updateStats();updateMachineFilter();renderTable();}
+
+function updateStats(){
+  $('s-tot').textContent=entries.length;
+  $('s-dt').textContent=entries.reduce((a,e)=>a+(e.dt||0),0).toFixed(1);
+  $('s-crit').textContent=entries.filter(e=>e.priority==='Critical').length;
+  $('s-day').textContent=entries.filter(e=>e.shift==='Day').length;
+  $('s-night').textContent=entries.filter(e=>e.shift==='Night').length;
+  $('s-assets').textContent=new Set(entries.map(e=>e.machine)).size;
+}
+
+function updateMachineFilter(){
+  const sel=$('fil-machine'),cur=sel.value;
+  sel.innerHTML='<option value="">All Assets</option>';
+  [...new Set(entries.map(e=>e.machine))].sort().forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=m;sel.appendChild(o);});
+  sel.value=cur;
+}
+
+function renderTable(){
+  const sF=$('fil-shift')?.value||'',mF=$('fil-machine')?.value||'',pF=$('fil-priority')?.value||'';
+  const rows=entries.filter(e=>(!sF||e.shift===sF)&&(!mF||e.machine===mF)&&(!pF||e.priority===pF));
+  const tbody=$('log-body');
+  if(!rows.length){tbody.innerHTML=`<tr class="erow"><td colspan="16">No entries yet — scan an asset QR code or click "New Entry"</td></tr>`;return;}
+  tbody.innerHTML=rows.map((e,i)=>`<tr>
+    <td style="font-family:var(--mono);color:var(--g400)">${e.num}</td>
+    <td><span class="tag tag-${e.shift?.toLowerCase()}">${e.shift==='Day'?'☀':'🌙'} ${e.shift}</span></td>
+    <td style="font-family:var(--mono);color:var(--g400)">${e.start||'—'}</td>
+    <td style="font-family:var(--mono);color:var(--g400)">${e.end||'—'}</td>
+    <td style="font-family:var(--mono);font-weight:600">${(e.dt||0)>0?Number(e.dt).toFixed(2):'—'}</td>
+    <td style="font-weight:500">${e.tech}</td>
+    <td style="font-family:var(--mono);color:var(--g400)">${e.asset||'—'}</td>
+    <td style="font-weight:600">${e.machine}</td>
+    <td style="color:var(--g500)">${e.category||'—'}</td>
+    <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${e.problem}">${e.problem}</td>
+    <td style="color:var(--g500)">${e.area||'—'}</td>
+    <td>${e.priority?`<span class="tag tag-${e.priority}">${e.priority}</span>`:'—'}</td>
+    <td style="color:var(--g500)">${e.wtype||'—'}</td>
+    <td style="max-width:150px;color:var(--g500);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${e.desc||''}">${e.desc||'—'}</td>
+    <td><span class="stag ${e.synced?'ok':''}">${e.synced?'✓':'local'}</span></td>
+    <td><button class="delbtn" onclick="deleteEntry(${entries.indexOf(e)})">✕</button></td>
+  </tr>`).join('');
+}
+
+// ── ASSETS VIEW ──
+function renderAssets(){
+  const filter=$('fil-area-assets')?.value||'';
+  const filtered=filter?ASSETS.filter(a=>a.area===filter):ASSETS;
+  const grid=$('asset-grid');
+  grid.innerHTML=filtered.map(a=>{
+    const count=entries.filter(e=>e.machine===a.name||e.asset===a.id).length;
+    const hasActive=entries.some(e=>(e.machine===a.name||e.asset===a.id)&&(e.priority==='Critical'||e.priority==='High'));
+    return `<div class="asset-card" onclick="assetClick('${a.id}')">
+      <div class="ac-count">${count>0?count+' WO':''}</div>
+      <div><span class="ac-dot ${count>0?'active':''}"></span></div>
+      <div class="ac-name">${a.name}</div>
+      <div class="ac-area">${a.area} · ${a.zone}</div>
+      ${hasActive?'<div style="margin-top:6px"><span class="tag tag-High" style="font-size:9px">Active issue</span></div>':''}
+    </div>`;
+  }).join('');
+}
+
+function assetClick(id){
+  const asset=ASSETS.find(a=>a.id===id);
+  if(asset) openScanLanding(asset);
+}
+
+// ── DASHBOARD ──
+function makeBars(el,counts){
+  if(!Object.keys(counts).length){el.innerHTML='<div class="nodata">No data.</div>';return;}
+  const max=Math.max(...Object.values(counts));
+  el.innerHTML=Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`
+    <div class="brow">
+      <span class="blbl">${k}</span>
+      <div class="btrk"><div class="bfil" style="width:${Math.round(v/max*100)}%"></div></div>
+      <span class="bcnt">${v}</span>
+    </div>`).join('');
+}
+
+function renderDash(){
+  const mc={},wc={},pc={},cc={};
+  entries.forEach(e=>{
+    mc[e.machine]=(mc[e.machine]||0)+1;
+    if(e.wtype) wc[e.wtype]=(wc[e.wtype]||0)+1;
+    if(e.priority) pc[e.priority]=(pc[e.priority]||0)+1;
+    if(e.category) cc[e.category]=(cc[e.category]||0)+1;
+  });
+  makeBars($('m-bars'),mc);makeBars($('w-bars'),wc);makeBars($('p-bars'),pc);makeBars($('c-bars'),cc);
+  const il=$('issue-list');
+  if(!entries.length){il.innerHTML='<div class="nodata">No entries yet.</div>';return;}
+  const ord={Critical:0,High:1,Medium:2,Low:3};
+  il.innerHTML=[...entries].sort((a,b)=>(ord[a.priority]??4)-(ord[b.priority]??4)).map(e=>`
+    <div class="ii">
+      <div><div class="ii-m">${e.machine}</div><div class="ii-p">${e.problem}</div></div>
+      <div class="ii-r">
+        <span class="tag tag-${e.shift?.toLowerCase()}">${e.shift==='Day'?'☀':'🌙'}</span>
+        ${(e.dt||0)>0?`<span style="font-size:11px;font-family:var(--mono);color:var(--g500)">${Number(e.dt).toFixed(1)}h</span>`:''}
+        <span style="font-size:11px;font-family:var(--mono);color:var(--g400)">${e.tech}</span>
+        ${e.priority?`<span class="tag tag-${e.priority}">${e.priority}</span>`:''}
+      </div>
+    </div>`).join('');
+}
+
+// ── REPORT ──
+function renderReportMeta(){
+  const dt=entries.reduce((a,e)=>a+(e.dt||0),0).toFixed(1);
+  $('rpt-sum').innerHTML=[
+    ['Total entries',entries.length],['Downtime',dt+' hrs'],
+    ['Day shift',entries.filter(e=>e.shift==='Day').length],
+    ['Night shift',entries.filter(e=>e.shift==='Night').length],
+    ['Assets affected',new Set(entries.map(e=>e.machine)).size],
+    ['Critical',entries.filter(e=>e.priority==='Critical').length],
+  ].map(([k,v])=>`<div class="mr"><span class="mk">${k}</span><span class="mv">${v}</span></div>`).join('');
+  const crits=entries.filter(e=>e.priority==='Critical'||e.priority==='High');
+  $('rpt-crit').innerHTML=crits.length?crits.map(e=>`
+    <div class="mr">
+      <span class="mk" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:140px">${e.machine}</span>
+      <span class="tag tag-${e.priority}">${e.priority}</span>
+    </div>`).join(''):'<div class="nodata">None logged.</div>';
+}
+
+async function generateReport(){
+  if(!entries.length){$('rbody').textContent='No entries logged yet.';return;}
+  const btn=$('genbtn');btn.disabled=true;btn.textContent='Generating...';
+  $('rbody').textContent='Writing shift report...';
+  const log=entries.map((e,i)=>`${i+1}. [${e.shift}] ${e.machine} | ${e.problem} | Priority: ${e.priority||'N/A'} | Type: ${e.wtype||'N/A'} | Tech: ${e.tech} | DT: ${(e.dt||0)>0?e.dt+'h':'none'} | Cat: ${e.category||'N/A'} | Notes: ${e.desc||'N/A'}`).join('\n');
+  const prompt=`You are the senior maintenance manager at Brunswick Bierworks, a craft beer canning facility in Toronto. Generate a professional end-of-shift maintenance report.
+
+WORK LOG:
+${log}
+
+Write a concise professional report with these sections:
+
+SHIFT OVERVIEW
+Brief summary of the shift's maintenance activity.
+
+CRITICAL & HIGH PRIORITY ISSUES
+Detail each critical/high issue, actions taken, and follow-up needed.
+
+RECURRING PATTERNS
+Machines or problems appearing multiple times. What does this signal?
+
+DOWNTIME ANALYSIS
+Total downtime, biggest contributors, production impact.
+
+HANDOVER NOTES
+What the next shift must action immediately.
+
+RECOMMENDATIONS
+2–3 specific preventive actions.
+
+Be specific, use actual machine names. Under 500 words. Professional tone.`;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})
+    });
+    const data=await res.json();
+    $('rbody').textContent=data.content?.map(c=>c.text||'').join('')||'Report generation failed.';
+  }catch(err){$('rbody').textContent='Could not generate report.\n\n'+err.message;}
+  btn.disabled=false;btn.textContent='Regenerate';
+}
+
+// ── QR CODE GENERATOR ──
+function generateAllQR(){
+  const baseUrl=($('qr-base-url').value||window.location.href.split('?')[0]).replace(/\/$/,'');
+  const out=$('qr-output');
+  out.innerHTML='';
+
+  const line1=ASSETS.filter(a=>a.area==='Line 1');
+  const utils=ASSETS.filter(a=>a.area==='Utilities');
+
+  function renderSection(title,assets){
+    const sec=document.createElement('div');
+    sec.innerHTML=`<div class="qr-section-title">${title}</div>`;
+    const grid=document.createElement('div');
+    grid.className='qr-grid';
+    assets.forEach(asset=>{
+      const url=`${baseUrl}?asset=${asset.id}`;
+      const card=document.createElement('div');
+      card.className='qr-card';
+      card.title=`Click to copy URL for ${asset.name}`;
+      const canvas=document.createElement('div');
+      canvas.id='qrc-'+asset.id;
+      card.innerHTML=`
+        <div style="margin-bottom:8px"></div>
+        <div class="qr-card-name">${asset.name}</div>
+        <div class="qr-card-area">${asset.area}</div>
+        <div class="qr-card-url">${url}</div>`;
+      card.querySelector('div').appendChild(canvas);
+      card.onclick=()=>navigator.clipboard?.writeText(url).then(()=>{
+        card.style.borderColor='var(--green)';
+        setTimeout(()=>card.style.borderColor='',1500);
+      });
+      grid.appendChild(card);
+      // Generate QR after DOM insert
+      setTimeout(()=>{
+        try{
+          new QRCode(canvas,{text:url,width:120,height:120,colorDark:'#0a0a0a',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+        }catch(e){canvas.textContent='QR error';}
+      },50);
+    });
+    sec.appendChild(grid);
+    out.appendChild(sec);
+  }
+
+  renderSection('Line 1 — Krones',line1);
+  renderSection('Utilities',utils);
+  $('qr-hint').textContent='✓ '+ASSETS.length+' QR codes generated. Click any card to copy its URL. Use "Print All" to print a full sheet for laminating.';
+}
+
+// Auto-refresh every 60s
+setInterval(()=>{if(!demoMode&&sbUrl)refreshEntries();},60000);
+</script>
+</body>
+</html>
