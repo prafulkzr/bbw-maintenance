@@ -109,6 +109,7 @@
     <button onclick="showTab('shift')" id="tab-shift" style="flex:1;padding:10px 2px;font-size:12px;font-weight:600;color:#666;border:none;border-bottom:2px solid transparent;background:none;cursor:pointer">This Shift</button>
     <button onclick="showTab('prev')" id="tab-prev" style="flex:1;padding:10px 2px;font-size:12px;font-weight:600;color:#666;border:none;border-bottom:2px solid transparent;background:none;cursor:pointer">Prev Shift</button>
     <button onclick="showTab('util')" id="tab-util" style="flex:1;padding:10px 2px;font-size:12px;font-weight:600;color:#666;border:none;border-bottom:2px solid transparent;background:none;cursor:pointer">Utilities</button>
+    <button onclick="showTab('pm')" id="tab-pm" style="flex:1;padding:10px 2px;font-size:12px;font-weight:600;color:#666;border:none;border-bottom:2px solid transparent;background:none;cursor:pointer">PMs</button>
     <button onclick="showTab('more')" id="tab-more" style="flex:1;padding:10px 2px;font-size:12px;font-weight:600;color:#666;border:none;border-bottom:2px solid transparent;background:none;cursor:pointer">More</button>
   </div>
 
@@ -118,6 +119,7 @@
     <div id="pane-shift" style="display:none"></div>
     <div id="pane-prev" style="display:none"></div>
     <div id="pane-util" style="display:none"></div>
+    <div id="pane-pm" style="display:none"></div>
     <div id="pane-more" style="display:none"></div>
   </div>
 
@@ -222,6 +224,7 @@ var ASSETS=[{"n": "Brunswick Bierworks", "c": "BBW1"}, {"n": "Building", "c": "A
 var GROUPS={"Line 1": ["KRONES LINE 1", "FILLER", "DEPALETTIZER", "ECI", "AIR RINSER", "CHECKMAT 1", "CHECKMAT 2", "PASTEURIZER", "DRYING TUNNEL 1", "DRYING TUNNEL 2", "VARIOPAC", "PALLETIZER", "RA J MERIDIAN", "CSW", "Drum Fans", "Seamer", "Logopak", "Lantech Wrapper", "Varioclean", "Line Control #1", "Line Control #2", "Labeler #1", "Labeler #2", "Label Camera", "Videojets", "TAPTONE", "Conti-Flow"], "Brewing": ["20HL Brewhouse", "20HL Mash Kettle", "20HL Lauter Tun", "20HL Whirlpool", "20HL Fermenters", "Hot Liquor Tank", "Cold Liquor Tank", "50HL Brewhouse", "50HL Mash Tun", "50HL Lauter Tun", "50HL Kettle", "50HL Whirlpool", "Malt Mill"], "Cellar": ["Fermenting Cellar", "Bright Beer Cellar", "GEA Centrifuge", "Flash Pasteurizer", "Beer Filter Membrane Skid", "Yeast Room"], "RTD/B3": ["RTD BLENDING B3", "PDS", "MIXER", "DAW TANK 1", "DAW TANK2", "RTD TANK 1", "RTD TANK 2", "RTD TANK 3", "SIMPLE SYRUP TANK"], "Utilities": ["Boiler", "Glycol", "Air", "Water", "CO2", "Electricity", "HVAC", "Gas", "Wastewater PIT"], "Facility": ["Forklift", "Power Walkie", "Floor Scrubber", "Building", "Warehouse", "Lab"]};
 var TECHS=["Praful", "Lahcen", "Viktor", "Adam", "Abin", "Akshay", "Anupam", "Maksym", "Sachin", "Sergei", "Yassine", "Yehor", "Vitalii"];
 var ADMIN="Praful";
+var PMS=[{"code": "SM114", "asset": "Lab  (A246)", "desc": "Check condition of lab's clean bench filter", "freq": "Every year, on September 24th", "priority": "High", "assignee": "Abin", "hours": "0.25", "type": "Preventive"}, {"code": "SM150", "asset": "Centrifuge (BBWCF1)", "desc": "UV Checks", "freq": "Every Friday", "priority": "High", "assignee": "Abin", "hours": "1.00", "type": "Preventive"}, {"code": "SM177", "asset": "PALLETIZER (A326)", "desc": "PALETIZER WEEKLY PM", "freq": "Every Friday", "priority": "High", "assignee": "Abin", "hours": "1.00", "type": "Preventive"}, {"code": "SM184", "asset": "PALLETIZER (A326)", "desc": "Monthly Lubrication", "freq": "The 26th day of every month", "priority": "High", "assignee": "Abin", "hours": "", "type": "Preventive"}, {"code": "SM219", "asset": "Boiler (BBWBR1)", "desc": "Boiler Pump Lubrication", "freq": "The 3rd day of every month", "priority": "", "assignee": "Abin", "hours": "", "type": "Preventive"}, {"code": "SM220", "asset": "Glycol  (A220)", "desc": "Lubrication of Pumps in Utilities room", "freq": "The 2nd day of every month", "priority": "", "assignee": "Abin", "hours": "", "type": "Preventive"}, {"code": "SM229", "asset": "RTD BLENDING B3 (A332)", "desc": "Check the functionality of UV lights on Building 3", "freq": "Every Monday", "priority": "", "assignee": "Abin", "hours": "", "type": "Inspection"}, {"code": "SM232", "asset": "Videojets (A349)", "desc": "Videojet 02 Wet end PM", "freq": "Every 4 days", "priority": "High", "assignee": "Abin", "hours": "", "type": "Inspection"}, {"code": "SM241", "asset": "KRONES LINE 1 (A315)", "desc": "Vacuuming WET END PM", "freq": "The 1st day of every month", "priority": "", "assignee": "Abin", "hours": "", "type": "Preventive"}, {"code": "SM311", "asset": "DAW TANK 1 (A338)", "desc": "B3 DAW tanks UV Light replacement", "freq": "Every year, on April 10th", "priority": "Highest", "assignee": "Abin", "hours": "", "type": "Preventive"}, {"code": "SM22", "asset": "Keg Machine (KEGGING)", "desc": "Keg Machine cleaning and filling head seals inspection", "freq": "Every year, on February 1st", "priority": "Medium", "assignee": "Adam", "hours": "1.00", "type": "Preventive"}, {"code": "SM23", "asset": "Keg Machine (KEGGING)", "desc": "Keg Machine bearing lubrication", "freq": "The 10th day of every month", "priority": "Medium", "assignee": "Adam", "hours": "0.50", "type": "Preventive"}, {"code": "SM49", "asset": "50HL Kettle (50HKTL1)", "desc": "50HL kettle inspection", "freq": "The 1st day of every month", "priority": "High", "assignee": "Adam", "hours": "1.00", "type": "Inspection"}, {"code": "SM102", "asset": "HVAC (A225)", "desc": "Yearly HVAC inspection", "freq": "Every 6 months on the 17th", "priority": "Medium", "assignee": "Adam", "hours": "", "type": "Preventive"}, {"code": "SM195", "asset": "Cellar (A272)", "desc": "Cellar Valves and Seals PM", "freq": "Every Wednesday", "priority": "Medium", "assignee": "Adam", "hours": "", "type": "Preventive"}, {"code": "SM201", "asset": "Keg Machine (KEGGING)", "desc": "Lubricate the Screw handles for CIP bars.", "freq": "Every 3 months on the 1st", "priority": "High", "assignee": "Adam", "hours": "", "type": "Preventive"}, {"code": "SM213", "asset": "HVAC (A225)", "desc": "HVAC Weekly PM", "freq": "Every Monday", "priority": "Highest", "assignee": "Adam", "hours": "", "type": "Preventive"}, {"code": "SM243", "asset": "Brewing (A217)", "desc": "Vacuuming B1 Electrical panels.", "freq": "The 1st day of every month", "priority": "", "assignee": "Adam", "hours": "", "type": "Preventive"}, {"code": "SM289", "asset": "Glycol  (A220)", "desc": "Clean RTU Fan Grills", "freq": "The 24th day of every month", "priority": "Medium", "assignee": "Adam", "hours": "0.50", "type": "Preventive"}, {"code": "SM300", "asset": "Brunswick Bierworks (BBW1)", "desc": "Conveyor Sprockets and Chains PM", "freq": "The 22nd day of every month", "priority": "High", "assignee": "Adam", "hours": "2.00", "type": "Inspection"}, {"code": "SM312", "asset": "innovations and kegging (A329)", "desc": "Mobile Wrapper Inspection.", "freq": "The 4th day of every month", "priority": "", "assignee": "Adam", "hours": "1.00", "type": "Inspection"}, {"code": "SM39", "asset": "50HL Brewhouse (BBW50HL)", "desc": "50HL Brewhouse manway inspection", "freq": "Every 6 months on the 31st", "priority": "High", "assignee": "Akshaylal", "hours": "0.10", "type": "Inspection"}, {"code": "SM43", "asset": "50HL Lauter Tun (50HLT1)", "desc": "50HL Lauter Tun manway gasket inspection", "freq": "Every 3 months on the 1st", "priority": "High", "assignee": "Akshaylal", "hours": "0.10", "type": "Inspection"}, {"code": "SM46", "asset": "Spent Grain Removal (SGR1)", "desc": "Spent grain pump inspection", "freq": "The 1st day of every month", "priority": "High", "assignee": "Akshaylal", "hours": "0.10", "type": "Inspection"}, {"code": "SM158", "asset": "FILLER (A316)", "desc": "Filler & Seamer Weekly PM", "freq": "Every Friday", "priority": "Medium", "assignee": "Akshaylal", "hours": "1.00", "type": "Food Safety PM"}, {"code": "SM159", "asset": "FILLER (A316)", "desc": "Monthly PM and lubrication", "freq": "Every 2 months on the 28th", "priority": "Medium", "assignee": "Akshaylal", "hours": "", "type": "Preventive"}, {"code": "SM165", "asset": "DEPALETTIZER (A317)", "desc": "weekly PM program", "freq": "Every Friday", "priority": "Medium", "assignee": "Akshaylal", "hours": "", "type": "Preventive"}, {"code": "SM166", "asset": "DEPALETTIZER (A317)", "desc": "monthly PM and lubrication", "freq": "The 1st day of every month", "priority": "High", "assignee": "Akshaylal", "hours": "", "type": "Preventive"}, {"code": "SM207", "asset": "Carbon Filter B3 (A346)", "desc": "Change the water strainers after Carbon filter", "freq": "Every year, on February 3rd", "priority": "", "assignee": "Akshaylal", "hours": "1.00", "type": "Food Safety PM"}, {"code": "SM216", "asset": "PALLETIZER (A326)", "desc": "Weekly PM for Lantech Wrapper", "freq": "Every Monday", "priority": "", "assignee": "Akshaylal", "hours": "", "type": "Preventive"}, {"code": "SM217", "asset": "PALLETIZER (A326)", "desc": "Monthly PM for Lantech Wrapper", "freq": "Every 2 months on the 1st", "priority": "", "assignee": "Akshaylal", "hours": "", "type": "Preventive"}, {"code": "SM218", "asset": "PALLETIZER (A326)", "desc": "Lubrication of Lantech Wrapper", "freq": "Every 3 months on the 24th", "priority": "", "assignee": "Akshaylal", "hours": "", "type": "Preventive"}, {"code": "SM297", "asset": "Flash Pasteurizer  (A258)", "desc": "Flash Pasteurizer PM", "freq": "Every 4 weeks on Monday", "priority": "High", "assignee": "Akshaylal", "hours": "1.00", "type": "Preventive"}, {"code": "SM307", "asset": "", "desc": "B1 Heat Exchanger Checks", "freq": "Every 3 months on the 29th", "priority": "High", "assignee": "Akshaylal", "hours": "0.50", "type": "Preventive"}, {"code": "SM167", "asset": "ECI (A318)", "desc": "Weekly PM", "freq": "Every Friday", "priority": "Medium", "assignee": "Anupam", "hours": "1.00", "type": "Preventive"}, {"code": "SM169", "asset": "ECI (A318)", "desc": "Monthly PM", "freq": "The 3rd day of every month", "priority": "Medium", "assignee": "Anupam", "hours": "1.00", "type": "Preventive"}, {"code": "SM171", "asset": "CHECKMAT 1 (A320)", "desc": "weekly PM", "freq": "Every Monday", "priority": "High", "assignee": "Anupam", "hours": "", "type": "Preventive"}, {"code": "SM175", "asset": "CHECKMAT 2 (A322)", "desc": "CHECKMAT 2 WEEKLY PM", "freq": "Every Friday", "priority": "High", "assignee": "Anupam", "hours": "1.00", "type": "Preventive"}, {"code": "SM231", "asset": "Videojets (A349)", "desc": "Videojet 01 Spare PM", "freq": "Every 4 days", "priority": "High", "assignee": "Anupam", "hours": "", "type": "Inspection"}, {"code": "SM244", "asset": "RTD BLENDING B3 (A332)", "desc": "Vacuuming B3 Electrical panels.", "freq": "The 2nd day of every month", "priority": "", "assignee": "Anupam", "hours": "", "type": "Preventive"}, {"code": "SM333", "asset": "Hot and Cold Liquor Tanks (BBWHLCLT)", "desc": "HLT and CLT inspection", "freq": "Every 2 months on the 3rd", "priority": "Medium", "assignee": "Anupam", "hours": "0.10", "type": "Inspection"}, {"code": "SM281", "asset": "Lab  (A246)", "desc": "Laboratory Laminar hood PM", "freq": "Every year, on June 10th", "priority": "High", "assignee": "Anupam", "hours": "", "type": "Preventive"}, {"code": "SM292", "asset": "", "desc": "Grease \"Golden Boy\" pump motor", "freq": "The 5th day of every month", "priority": "Medium", "assignee": "Anupam", "hours": "0.10", "type": "Preventive"}, {"code": "SM296", "asset": "Glycol  (A220)", "desc": "Compressor Strainer Cleaning PM", "freq": "Every 3 months on the 18th", "priority": "Highest", "assignee": "Anupam", "hours": "", "type": "Preventive"}, {"code": "SM310", "asset": "RTD BLENDING B3 (A332)", "desc": "B3 Carbon filter UV light replacement Yearly.", "freq": "Every year, on June 21st", "priority": "Highest", "assignee": "Anupam", "hours": "", "type": "Preventive"}, {"code": "SM47", "asset": "Spent Grain Removal (SGR1)", "desc": "Spent grain silo inspection", "freq": "Every 3 weeks on Sunday", "priority": "High", "assignee": "Maksym", "hours": "0.20", "type": "Inspection"}, {"code": "SM115", "asset": "Beer Filter Membrane Skid (A253)", "desc": "Food Safety PM for Pentair Filter Membrane", "freq": "Every 2 months on the 29th", "priority": "Highest", "assignee": "Maksym", "hours": "2.00", "type": "Food Safety PM"}, {"code": "SM176", "asset": "Brunswick Bierworks (BBW1)", "desc": "NORDSON GLUE UNIT WEEKLY PM", "freq": "The 15th day of every month", "priority": "Highest", "assignee": "Maksym", "hours": "1.00", "type": "Preventive"}, {"code": "SM227", "asset": "Brunswick Bierworks (BBW1)", "desc": "RA J - NORDSON FILTER CHANGE", "freq": "Every year, on May 23rd", "priority": "", "assignee": "Maksym", "hours": "", "type": "Preventive"}, {"code": "SM238", "asset": "VARIOPAC (A325)", "desc": "Variopac PM", "freq": "Every Monday", "priority": "Highest", "assignee": "Maksym", "hours": "", "type": "Preventive"}, {"code": "SM240", "asset": "VARIOPAC (A325)", "desc": "Variopac Vacuum Vane pump PM", "freq": "Every 2 weeks on Monday", "priority": "", "assignee": "Maksym", "hours": "", "type": "Preventive"}, {"code": "SM246", "asset": "RTD BLENDING B3 (A332)", "desc": "B3 UV Viewport Maintenance.", "freq": "Every 2 weeks on Monday", "priority": "Highest", "assignee": "Maksym", "hours": "", "type": "Inspection"}, {"code": "SM259", "asset": "Mixer tank 1 (A274)", "desc": "MX1 mixer gearbox oil change", "freq": "Every 2 years, on March 1st", "priority": "High", "assignee": "Maksym", "hours": "1.00", "type": "Preventive"}, {"code": "SM260", "asset": "Malt Mill (MM1)", "desc": "Drivebelt and gear inspection", "freq": "Every 3 months on the 1st", "priority": "High", "assignee": "Maksym", "hours": "0.50", "type": "Inspection"}, {"code": "SM266", "asset": "Tetrahop pump (A350)", "desc": "Clean tetrahop pump and parts", "freq": "Every 3 weeks on Monday", "priority": "High", "assignee": "Maksym", "hours": "1.10", "type": "Preventive"}, {"code": "SM268", "asset": "Malt Mill (MM1)", "desc": "Clean Mill Magnet", "freq": "The 28th day of every month", "priority": "High", "assignee": "Maksym", "hours": "0.20", "type": "Preventive"}, {"code": "SM269", "asset": "Malt Mill (MM1)", "desc": "Inspect the Malt Mill screen", "freq": "Every 3 months on the 28th", "priority": "High", "assignee": "Maksym", "hours": "0.30", "type": "Preventive"}, {"code": "SM270", "asset": "VARIOPAC (A325)", "desc": "Variopac Film Vacuum Pumps PM", "freq": "Every 2 months on the 5th", "priority": "High", "assignee": "Maksym", "hours": "", "type": "Preventive"}, {"code": "SM272", "asset": "RTD BLENDING B3 (A332)", "desc": "RO Filter change PM", "freq": "Every year, on March 19th", "priority": "High", "assignee": "Maksym", "hours": "", "type": "Preventive"}, {"code": "SM273", "asset": "RTD BLENDING B3 (A332)", "desc": "B3 Carbon Filter PM", "freq": "Every year, on March 19th", "priority": "High", "assignee": "Maksym", "hours": "", "type": "Preventive"}, {"code": "SM275", "asset": "Building 1 Water filtration  (A347)", "desc": "Carbon Filter PM", "freq": "Every year, on August 20th", "priority": "High", "assignee": "Maksym", "hours": "", "type": "Preventive"}, {"code": "SM293", "asset": "RA J MERIDIAN (A331)", "desc": "RA Jones Nordson PM", "freq": "The 26th day of every month", "priority": "High", "assignee": "Maksym", "hours": "", "type": "Preventive"}, {"code": "SM1", "asset": "Boiler Holding Tank (BHT1)", "desc": "Boiler feedwater tank strainer cleaning", "freq": "Every Friday", "priority": "Medium", "assignee": "Praful", "hours": "0.50", "type": "Preventive"}, {"code": "SM55", "asset": "Air Compressor (AC1)", "desc": "Air compressor inspection", "freq": "Every Friday", "priority": "Medium", "assignee": "Praful", "hours": "0.20", "type": "Preventive"}, {"code": "SM57", "asset": "Air Compressor (AC1)", "desc": "Air Dryer filter PM", "freq": "Every year, on September 20th", "priority": "High", "assignee": "Praful", "hours": "1.00", "type": "Preventive"}, {"code": "SM59", "asset": "Air Compressor (AC1)", "desc": "Air compressor 8000hr maintenance", "freq": "Every 2 years, on September 20th", "priority": "High", "assignee": "Praful", "hours": "2.00", "type": "Preventive"}, {"code": "SM160", "asset": "FILLER (A316)", "desc": "change CO2 filter\nchange Air filters", "freq": "Every 180 days", "priority": "High", "assignee": "Praful", "hours": "", "type": "Food Safety PM"}, {"code": "SM191", "asset": "Glycol  (A220)", "desc": "Monthly check for glycol", "freq": "The 1st day of every month", "priority": "High", "assignee": "Praful", "hours": "", "type": "Preventive"}, {"code": "SM204", "asset": "Boiler (BBWBR1)", "desc": "Boiler Quarterly check", "freq": "Every 3 months on the 3rd", "priority": "High", "assignee": "Praful", "hours": "", "type": "Preventive"}, {"code": "SM247", "asset": "RTD BLENDING B3 (A332)", "desc": "O-ring replacement on UV Viewport of B3 RO UV", "freq": "Every 3 years, on January 30th", "priority": "", "assignee": "Praful", "hours": "", "type": "Preventive"}, {"code": "SM249", "asset": "50HL Brewhouse (BBW50HL)", "desc": "Turbidity meter PM", "freq": "Every 2 years, on July 12th", "priority": "Highest", "assignee": "Praful", "hours": "", "type": "Preventive"}, {"code": "SM265", "asset": "AIR RINSER (A319)", "desc": "Change the HEPA Filters on AIR RINSER", "freq": "Every 6 months on the 26th", "priority": "Highest", "assignee": "Praful", "hours": "", "type": "Preventive"}, {"code": "SM271", "asset": "Waste systems (BBWBWH1)", "desc": "Outside Sewage water PM", "freq": "Every 3 months on the 5th", "priority": "Highest", "assignee": "Praful", "hours": "", "type": "Preventive"}, {"code": "SM274", "asset": "Building 1 Water filtration  (A347)", "desc": "Carbon Media B1 PM.", "freq": "Every 5 years, on May 9th", "priority": "High", "assignee": "Praful", "hours": "", "type": "Preventive"}, {"code": "SM276", "asset": "AIR RINSER (A319)", "desc": "Pressure Sensor PM", "freq": "Every year, on May 20th", "priority": "Highest", "assignee": "Praful", "hours": "", "type": "Calibration"}, {"code": "SM278", "asset": "Air Compressor (AC1)", "desc": "Air Compressor PM", "freq": "Every 3 months on the 14th", "priority": "", "assignee": "Praful", "hours": "", "type": "Preventive"}, {"code": "SM279", "asset": "RTD BLENDING B3 (A332)", "desc": "HVAC Filters PM", "freq": "Every year, on February 14th", "priority": "Highest", "assignee": "Praful", "hours": "", "type": "Preventive"}, {"code": "SM302", "asset": "RTD BLENDING B3 (A332)", "desc": "Carbon Replacement B3", "freq": "Every 3 years, on November 22nd", "priority": "Highest", "assignee": "Praful", "hours": "", "type": "Food Safety PM"}, {"code": "SM50", "asset": "50HL Whirlpool (50HWP1)", "desc": "50HL Whirlpool inspection", "freq": "Every 3 months on the 31st", "priority": "High", "assignee": "Sachin", "hours": "0.10", "type": "Inspection"}, {"code": "SM51", "asset": "50HL Whirlpool (50HWP1)", "desc": "50HL Whirlpool CIP inspection", "freq": "The 31st day of every month", "priority": "High", "assignee": "Sachin", "hours": "1.30", "type": "Inspection"}, {"code": "SM161", "asset": "AIR RINSER (A319)", "desc": "Filters: Change the filters on Air Rinser. Three places.", "freq": "Every year, on August 17th", "priority": "Highest", "assignee": "Sachin", "hours": "", "type": "Food Safety PM"}, {"code": "SM170", "asset": "AIR RINSER (A319)", "desc": "Air Rinser PM", "freq": "Every Monday", "priority": "Highest", "assignee": "Sachin", "hours": "", "type": "Preventive"}, {"code": "SM172", "asset": "PASTEURIZER (A321)", "desc": "weeky PM", "freq": "Every Friday", "priority": "", "assignee": "Sachin", "hours": "4.00", "type": "Preventive"}, {"code": "SM174", "asset": "PASTEURIZER (A321)", "desc": "MONTHLY LUBRICATION AND PM", "freq": "The 1st day of every month", "priority": "High", "assignee": "Sachin", "hours": "3.00", "type": "Preventive"}, {"code": "SM234", "asset": "Videojets (A349)", "desc": "Videojet 03 Dry end PM.", "freq": "Every 4 days", "priority": "High", "assignee": "Sachin", "hours": "", "type": "Inspection"}, {"code": "SM255", "asset": "50HL Brewhouse (BBW50HL)", "desc": "50HL Brewhouse manway inspection", "freq": "Every 2 months on the 1st", "priority": "High", "assignee": "Sachin", "hours": "0.10", "type": "Inspection"}, {"code": "SM277", "asset": "GEA Centrifuge (CF1)", "desc": "Filter Cleaning PM", "freq": "Every 6 months on the 20th", "priority": "Highest", "assignee": "Sachin", "hours": "", "type": "Preventive"}, {"code": "SM283", "asset": "CSW (A351)", "desc": "CSW Semi-annual PM", "freq": "Every 6 months on the 30th", "priority": "High", "assignee": "Sachin", "hours": "", "type": "Preventive"}, {"code": "SM284", "asset": "CSW (A351)", "desc": "CSW Weekly PM", "freq": "Every Monday", "priority": "High", "assignee": "Sachin", "hours": "", "type": "Preventive"}, {"code": "SM287", "asset": "Centrifuge (BBWCF1)", "desc": "Clean centrifuge electrical cabinet cooling fan filters", "freq": "Every 3 months on the 15th", "priority": "Medium", "assignee": "Sachin", "hours": "0.50", "type": "Preventive"}, {"code": "SM304", "asset": "FILLER (A316)", "desc": "100 Mesh PM", "freq": "Every 3 months on the 14th", "priority": "High", "assignee": "Sachin", "hours": "", "type": "Food Safety PM"}, {"code": "SM4", "asset": "20HL Brewhouse (BBW20HL)", "desc": "20HL Brewhouse tighten tri-clamps, pipe holders", "freq": "The 15th day of every month", "priority": "Medium", "assignee": "Sergei", "hours": "2.00", "type": "Preventive"}, {"code": "SM5", "asset": "50HL Brewhouse (BBW50HL)", "desc": "Brewhouse Equipment check", "freq": "Every 4 weeks on Monday", "priority": "Medium", "assignee": "Sergei", "hours": "8.00", "type": "Preventive"}, {"code": "SM13", "asset": "Grain Handling (BBWGH1)", "desc": "Grain Handling Inspection", "freq": "Every Monday", "priority": "Medium", "assignee": "Sergei", "hours": "1.00", "type": "Inspection"}, {"code": "SM34", "asset": "Hot and Cold Liquor Tanks (BBWHLCLT)", "desc": "HLT and CLT pressure and flow inspection/cleaning", "freq": "The 2nd day of every month", "priority": "High", "assignee": "Sergei", "hours": "0.10", "type": "Inspection"}, {"code": "SM36", "asset": "Hot and Cold Liquor Tanks (BBWHLCLT)", "desc": "Cold Liquor Tank Valve inspection", "freq": "Every Monday", "priority": "Medium", "assignee": "Sergei", "hours": "0.10", "type": "Inspection"}, {"code": "SM37", "asset": "50HL Mash Tun (50HMT1)", "desc": "50HL Mash Tun inspection", "freq": "The 31st day of every month", "priority": "High", "assignee": "Sergei", "hours": "0.20", "type": "Inspection"}, {"code": "SM40", "asset": "50HL Lauter Tun (50HLT1)", "desc": "Lauter tun shaft seals inspection", "freq": "The 1st day of every month", "priority": "High", "assignee": "Sergei", "hours": "0.10", "type": "Inspection"}, {"code": "SM41", "asset": "50HL Lauter Tun (50HLT1)", "desc": "50HL Lauter Tun inspection", "freq": "Every 4 weeks on Thursday", "priority": "High", "assignee": "Sergei", "hours": "2.00", "type": "Inspection"}, {"code": "SM45", "asset": "Spent Grain Removal (SGR1)", "desc": "Spent Grain Hopper Inspection/Cleaning", "freq": "Every Monday", "priority": "High", "assignee": "Sergei", "hours": "1.00", "type": "Inspection"}, {"code": "SM48", "asset": "50HL Kettle (50HKTL1)", "desc": "50HL Kettle inspection/cleaning", "freq": "Every 4 weeks on Friday", "priority": "High", "assignee": "Sergei", "hours": "3.00", "type": "Food Safety PM"}, {"code": "SM56", "asset": "KRONES LINE 1 (A315)", "desc": "L1 Pneumatic units PM", "freq": "The 15th day of every month", "priority": "High", "assignee": "Sergei", "hours": "1.00", "type": "Preventive"}, {"code": "SM193", "asset": "50HL Brewhouse (BBW50HL)", "desc": "B1 Pneumatic Valve PM", "freq": "Every Tuesday", "priority": "Medium", "assignee": "Sergei", "hours": "", "type": "Preventive"}, {"code": "SM205", "asset": "50HL Lauter Tun (50HLT1)", "desc": "Lauter Tun deep cleaning", "freq": "Every 2 months on the 15th", "priority": "High", "assignee": "Sergei", "hours": "", "type": "Preventive"}, {"code": "SM248", "asset": "50HL Brewhouse (BBW50HL)", "desc": "Spent Grain Stator PM", "freq": "The 2nd day of every month", "priority": "", "assignee": "Sergei", "hours": "", "type": "Preventive"}, {"code": "SM81", "asset": "Malt Mill (MM1)", "desc": "Malt mill cleaning", "freq": "The 31st day of every month", "priority": "High", "assignee": "Sergei", "hours": "2.80", "type": "Preventive"}, {"code": "SM258", "asset": "50HL Lauter Tun (50HLT1)", "desc": "LT screw jack lubrication", "freq": "Every Monday", "priority": "High", "assignee": "Sergei", "hours": "0.30", "type": "Preventive"}, {"code": "SM261", "asset": "Malt Mill (MM1)", "desc": "Grease bearings in malt mill", "freq": "Every 2 months on the 3rd", "priority": "High", "assignee": "Sergei", "hours": "", "type": "Preventive"}, {"code": "SM262", "asset": "50HL Mash Tun (50HMT1)", "desc": "Clean slide gate", "freq": "The 12th day of every month", "priority": "Medium", "assignee": "Sergei", "hours": "0.30", "type": "Preventive"}, {"code": "SM299", "asset": "Cellar (A272)", "desc": "Cellar hoses PM", "freq": "Every 2 weeks on Monday", "priority": "High", "assignee": "Sergei", "hours": "", "type": "Inspection"}, {"code": "SM3", "asset": "Brunswick Bierworks (BBW1)", "desc": "Morning Checks", "freq": "Every Monday, Tuesday, Wednesday, Thursday and Friday", "priority": "Medium", "assignee": "Technicians", "hours": "0.13", "type": "Preventive"}, {"code": "SM202", "asset": "Boiler (BBWBR1)", "desc": "Daily boiler check", "freq": "Every day", "priority": "High", "assignee": "Technicians", "hours": "0.10", "type": "Preventive"}, {"code": "SM203", "asset": "Boiler (BBWBR1)", "desc": "Boiler water check.", "freq": "Every day", "priority": "High", "assignee": "Technicians", "hours": "", "type": "Preventive"}, {"code": "SM209", "asset": "PASTEURIZER (A321)", "desc": "Strainer cleaning Pasteurizer", "freq": "Every 2 weeks on Sunday", "priority": "High", "assignee": "Technicians", "hours": "", "type": "Preventive"}, {"code": "SM236", "asset": "Waste systems (BBWBWH1)", "desc": "Waste Water Dosage PM", "freq": "Every day", "priority": "High", "assignee": "Technicians", "hours": "0.50", "type": "Inspection"}, {"code": "SM245", "asset": "Waste systems (BBWBWH1)", "desc": "Calibration of Wastewater pH probe", "freq": "The 10th day of every month", "priority": "Highest", "assignee": "Technicians", "hours": "0.30", "type": "Calibration"}, {"code": "SM280", "asset": "Boiler (BBWBR1)", "desc": "Spirax Hot water Heat Xchanger PM", "freq": "Every 3 months on the 9th", "priority": "Highest", "assignee": "Technicians", "hours": "", "type": "Preventive"}, {"code": "SM282", "asset": "Glycol  (A220)", "desc": "Chiller Inspection PM", "freq": "Every Monday", "priority": "", "assignee": "Technicians", "hours": "", "type": "Inspection"}, {"code": "SM290", "asset": "PASTEURIZER (A321)", "desc": "Pasteurizer Nozzle PM", "freq": "Every Thursday", "priority": "High", "assignee": "Technicians", "hours": "", "type": "Preventive"}, {"code": "SM291", "asset": "Videojets (A349)", "desc": "Labeler PM.", "freq": "Every Monday", "priority": "High", "assignee": "Technicians", "hours": "", "type": "Preventive"}, {"code": "SM298", "asset": "FILLER (A316)", "desc": "Seamer Lubrication system PM", "freq": "Every 45 days", "priority": "High", "assignee": "Technicians", "hours": "0.15", "type": "Preventive"}, {"code": "SM9", "asset": "Chainvey Drive - Bin to Mill (1M001)", "desc": "Malt Chain Drive Bin - Mill Cleaning/Inspection", "freq": "Every 3 months on the 1st", "priority": "High", "assignee": "Viktor", "hours": "1.00", "type": "Preventive"}, {"code": "SM33", "asset": "Hot and Cold Liquor Tanks (BBWHLCLT)", "desc": "HLT and CLT inspection", "freq": "Every 3 months on the 1st", "priority": "Medium", "assignee": "Viktor", "hours": "0.10", "type": "Inspection"}, {"code": "SM35", "asset": "Hot and Cold Liquor Tanks (BBWHLCLT)", "desc": "HLT and CLT piping and valve operations", "freq": "Every year, on July 18th", "priority": "High", "assignee": "Viktor", "hours": "0.10", "type": "Inspection"}, {"code": "SM38", "asset": "50HL Mash Tun (50HMT1)", "desc": "50HL Mash tun mixer oil level inspection", "freq": "Every 6 months on the 31st", "priority": "High", "assignee": "Viktor", "hours": "0.10", "type": "Inspection"}, {"code": "SM42", "asset": "50HL Lauter Tun (50HLT1)", "desc": "50HL Lauter Tun inspection", "freq": "Every 2 months on the 31st", "priority": "High", "assignee": "Viktor", "hours": "1.00", "type": "Inspection"}, {"code": "SM44", "asset": "50HL Lauter Tun (50HLT1)", "desc": "50HL Lauter tun rake drive oil inspection", "freq": "Every 6 months on the 1st", "priority": "High", "assignee": "Viktor", "hours": "1.00", "type": "Inspection"}, {"code": "SM225", "asset": "Brunswick Bierworks (BBW1)", "desc": "Quarterly PM of RA Jones", "freq": "Every 4 months on the 18th", "priority": "", "assignee": "Viktor", "hours": "", "type": "Preventive"}, {"code": "SM511", "asset": "50HL Brewhouse (BBW50HL)", "desc": "Brewhouse equipment check", "freq": "Every 2 months on the 22nd", "priority": "Medium", "assignee": "Viktor", "hours": "8.00", "type": "Preventive"}, {"code": "SM388", "asset": "50HL Mash Tun (50HMT1)", "desc": "50HL Mash Tun mixer oil level inspection", "freq": "Every 4 months on the 3rd", "priority": "High", "assignee": "Viktor", "hours": "0.10", "type": "Inspection"}, {"code": "SM264", "asset": "FILLER (A316)", "desc": "Seamer Water strainer filter PM", "freq": "Every 6 months on the 15th", "priority": "High", "assignee": "Viktor", "hours": "", "type": "Preventive"}, {"code": "SM285", "asset": "CSW (A351)", "desc": "CSW Monthly PM", "freq": "The 30th day of every month", "priority": "High", "assignee": "Viktor", "hours": "", "type": "Preventive"}, {"code": "SM288", "asset": "50HL Lauter Tun (50HLT1)", "desc": "Replace grease inside screw jack gear box", "freq": "Every year, on July 15th", "priority": "High", "assignee": "Viktor", "hours": "1.40", "type": "Preventive"}, {"code": "SM306", "asset": "CO2 (A222)", "desc": "Annual C02 Polisher PM", "freq": "Every year, on January 21st", "priority": "High", "assignee": "Viktor", "hours": "", "type": "Preventive"}, {"code": "SM308", "asset": "FILLER (A316)", "desc": "Filler Air Dryer PM", "freq": "Every year, on February 10th", "priority": "Highest", "assignee": "Viktor", "hours": "", "type": "Preventive"}, {"code": "SM309", "asset": "RTD BLENDING B3 (A332)", "desc": "B3 Pumps and Agitator PM", "freq": "Every Monday", "priority": "High", "assignee": "Viktor", "hours": "", "type": "Inspection"}, {"code": "SM180", "asset": "Keg Machine (KEGGING)", "desc": "Weeky PM", "freq": "Every 2 weeks on Tuesday", "priority": "High", "assignee": "Vitalii", "hours": "", "type": "Food Safety PM"}, {"code": "SM183", "asset": "KRONES LINE 1 (A315)", "desc": "LUBRICATE EMPTY CAN CONVEYOR", "freq": "Every 2 months on the 15th", "priority": "Highest", "assignee": "Vitalii", "hours": "", "type": "Preventive"}, {"code": "SM185", "asset": "RA J MERIDIAN (A331)", "desc": "LUBRICATION OF RAJONES", "freq": "The 27th day of every month", "priority": "High", "assignee": "Vitalii", "hours": "", "type": "Preventive"}, {"code": "SM210", "asset": "CHECKMAT 1 (A320)", "desc": "LUBRICATE ALL CAN CONVEYOR", "freq": "Every 2 months on the 21st", "priority": "High", "assignee": "Vitalii", "hours": "", "type": "Preventive"}, {"code": "SM211", "asset": "VARIOPAC (A325)", "desc": "LUBRICATE ALL CARTON CONVEYORS", "freq": "Every 2 months on the 1st", "priority": "High", "assignee": "Vitalii", "hours": "", "type": "Preventive"}, {"code": "SM215", "asset": "Seamer (A361)", "desc": "Semi Annual PM: Cleaning of Filter before Seamer Lubrication", "freq": "Every 3 months on the 1st", "priority": "", "assignee": "Vitalii", "hours": "0.15", "type": "Preventive"}, {"code": "SM222", "asset": "KRONES LINE 1 (A315)", "desc": "Monthly RA Jones PM", "freq": "The 23rd day of every month", "priority": "", "assignee": "Vitalii", "hours": "", "type": "Preventive"}, {"code": "SM224", "asset": "Brunswick Bierworks (BBW1)", "desc": "RA Jones Inspection", "freq": "The 19th day of every month", "priority": "", "assignee": "Vitalii", "hours": "", "type": "Preventive"}, {"code": "SM226", "asset": "Brunswick Bierworks (BBW1)", "desc": "Quarterly Inspection of RA Jones", "freq": "Every 2 months on the 19th", "priority": "", "assignee": "Vitalii", "hours": "", "type": "Preventive"}, {"code": "SM62", "asset": "Forklift  (PWRLFT)", "desc": "Check water level in batteries, use indicating light for level, green (ok) red (low).  refill if required", "freq": "Every 4 days", "priority": "High", "assignee": "Yassine", "hours": "0.10", "type": "Inspection"}, {"code": "SM63", "asset": "Power Walkie (PWRWLK)", "desc": "Check water level in batteries, refill if required", "freq": "Every 4 days", "priority": "High", "assignee": "Yassine", "hours": "0.10", "type": "Inspection"}, {"code": "SM85", "asset": "Power Walkie (PWRWLK)", "desc": "Water level check", "freq": "Every 4 days", "priority": "Low", "assignee": "Yassine", "hours": "0.10", "type": "Preventive"}, {"code": "SM192", "asset": "RTD BLENDING B3 (A332)", "desc": "B3  PM", "freq": "Every 4 days", "priority": "Medium", "assignee": "Yassine", "hours": "", "type": "Preventive"}, {"code": "SM198", "asset": "PALLETIZER (A326)", "desc": "Lubrication: Pivoting Conveyors", "freq": "Every 2 months on the 8th", "priority": "High", "assignee": "Yassine", "hours": "", "type": "Preventive"}, {"code": "SM221", "asset": "RTD BLENDING B3 (A332)", "desc": "Lubrication : Building 3 pumps.", "freq": "The 30th day of every month", "priority": "", "assignee": "Yassine", "hours": "", "type": "Preventive"}, {"code": "SM228", "asset": "SIMPLE SYRUP TANK (A345)", "desc": "Lubrication : B3 Sugar syrup tank pump.", "freq": "Every 3 months on the 19th", "priority": "", "assignee": "Yassine", "hours": "", "type": "Preventive"}, {"code": "SM242", "asset": "KRONES LINE 1 (A315)", "desc": "Vacuuming DRY END PM", "freq": "The 1st day of every month", "priority": "", "assignee": "Yassine", "hours": "", "type": "Preventive"}, {"code": "SM267", "asset": "Cardboard Baler (CBBAIL)", "desc": "Baler PM", "freq": "The 25th day of every month", "priority": "High", "assignee": "Yassine", "hours": "", "type": "Preventive"}, {"code": "SM286", "asset": "Drum Fans (A352)", "desc": "Drum Fans PM", "freq": "The 7th day of every month", "priority": "", "assignee": "Yassine", "hours": "", "type": "Preventive"}, {"code": "SM305", "asset": "innovations and kegging (A329)", "desc": "Mobile Shrinking Tunnel PM", "freq": "The 20th day of every month", "priority": "High", "assignee": "Yassine", "hours": "", "type": "Preventive"}];
 var APIN="0319";
 var MAILTO="maintenance@brunswickbierworks.com";
 var SB="https://klrxecmasfrwowdhplfn.supabase.co";
@@ -413,6 +416,7 @@ function showTab(name){
   if(name==='shift')renderShift();
   if(name==='prev')renderPrev();
   if(name==='util')renderUtil();
+  if(name==='pm')renderPM();
   if(name==='more')renderMore();
 }
 
@@ -777,236 +781,173 @@ function saveUtil(){
   renderUtil();
 }
 
+function renderPM(){
+  var el=gid('pane-pm');
+  var today=new Date();
+  var dayOfWeek=today.toLocaleDateString('en-US',{weekday:'long'}); // e.g. "Monday"
+  var dayOfMonth=today.getDate();
+
+  // Determine which PMs are due today
+  function isDueToday(pm){
+    var w=pm.freq.toLowerCase();
+    if(w.indexOf('every day')>=0)return true;
+    if(w.indexOf('every monday')>=0&&dayOfWeek==='Monday')return true;
+    if(w.indexOf('every tuesday')>=0&&dayOfWeek==='Tuesday')return true;
+    if(w.indexOf('every wednesday')>=0&&dayOfWeek==='Wednesday')return true;
+    if(w.indexOf('every thursday')>=0&&dayOfWeek==='Thursday')return true;
+    if(w.indexOf('every friday')>=0&&dayOfWeek==='Friday')return true;
+    if(w.indexOf('every saturday')>=0&&dayOfWeek==='Saturday')return true;
+    if(w.indexOf('every sunday')>=0&&dayOfWeek==='Sunday')return true;
+    // Monthly triggers
+    var nth=w.match(/the (\d+)(st|nd|rd|th) day/);
+    if(nth&&parseInt(nth[1])===dayOfMonth)return true;
+    // Every 4 days approx = weekly
+    if(w.indexOf('every 4 days')>=0&&dayOfWeek==='Monday')return true;
+    return false;
+  }
+
+  var duePMs=PMS.filter(isDueToday);
+  var allPMs=PMS;
+
+  var html='';
+
+  // Due today section
+  html+='<div style="background:#1a1a1a;border-radius:12px;padding:16px;margin-bottom:12px">';
+  html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">';
+  html+='<div style="font-size:13px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.06em">Due Today</div>';
+  html+='<span style="background:'+( duePMs.length?'rgba(220,38,38,.2)':'rgba(22,163,74,.15)')+';color:'+(duePMs.length?'#ef4444':'#4ade80')+';padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700">'+duePMs.length+' PMs</span>';
+  html+='</div>';
+
+  if(!duePMs.length){
+    html+='<div style="text-align:center;padding:16px;color:#555;font-size:14px">No PMs scheduled for today</div>';
+  }else{
+    duePMs.forEach(function(pm){
+      var pcolor=pm.priority==='High'?'#ef4444':pm.priority==='Medium'?'#f59e0b':'#6b7280';
+      html+='<div style="background:#222;border-radius:9px;padding:12px 14px;margin-bottom:8px;border-left:3px solid '+pcolor+'">';
+      html+='<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">';
+      html+='<div style="flex:1">';
+      html+='<div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:2px">'+pm.asset+'</div>';
+      html+='<div style="font-size:13px;color:#ccc;margin-bottom:4px">'+pm.desc+'</div>';
+      html+='<div style="font-size:11px;color:#666;font-family:monospace">'+pm.code+' &bull; '+pm.freq+(pm.assignee?' &bull; '+pm.assignee:'')+(pm.hours?' &bull; '+pm.hours+'h':'')+'</div>';
+      html+='</div>';
+      html+='<span style="font-size:10px;font-weight:700;padding:3px 7px;border-radius:4px;background:'+pcolor+'22;color:'+pcolor+';white-space:nowrap">'+pm.priority+'</span>';
+      html+='</div>';
+      html+='<button onclick="logPMDone(\''+pm.code+'\',\''+pm.asset.replace(/'/g,'&#39;')+'\',\''+pm.desc.replace(/'/g,'&#39;')+'\')" style="width:100%;padding:8px;background:rgba(22,163,74,.15);color:#4ade80;border:1px solid rgba(22,163,74,.3);border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;margin-top:8px">Mark as Done</button>';
+      html+='</div>';
+    });
+  }
+  html+='</div>';
+
+  // All PMs list
+  html+='<div style="background:#1a1a1a;border-radius:12px;padding:16px">';
+  html+='<div style="font-size:13px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">All PMs ('+allPMs.length+')</div>';
+
+  // Search
+  html+='<input type="text" id="pm-search" oninput="filterPMs(this.value)" placeholder="Search PMs..." style="width:100%;background:#222;border:1px solid #333;border-radius:8px;padding:10px 13px;font-size:14px;color:#fff;outline:none;margin-bottom:10px">';
+
+  html+='<div id="pm-list">';
+  html+=renderPMList(allPMs);
+  html+='</div>';
+  html+='</div>';
+
+  el.innerHTML=html;
+}
+
+function renderPMList(items){
+  if(!items.length)return '<div style="text-align:center;padding:20px;color:#555">No PMs found</div>';
+  return items.map(function(pm){
+    var pcolor=pm.priority==='High'?'#ef4444':pm.priority==='Medium'?'#f59e0b':'#6b7280';
+    return '<div style="background:#222;border-radius:9px;padding:11px 13px;margin-bottom:7px;border-left:3px solid '+pcolor+'">' +
+      '<div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:1px">'+pm.asset+'</div>'+
+      '<div style="font-size:12px;color:#ccc;margin-bottom:3px">'+pm.desc+'</div>'+
+      '<div style="font-size:10px;color:#666;font-family:monospace">'+pm.code+' &bull; '+pm.freq+(pm.assignee?' &bull; '+pm.assignee:'')+'</div>'+
+      '</div>';
+  }).join('');
+}
+
+function filterPMs(val){
+  var lower=val.toLowerCase();
+  var filtered=PMS.filter(function(pm){
+    return pm.asset.toLowerCase().indexOf(lower)>=0||
+           pm.desc.toLowerCase().indexOf(lower)>=0||
+           pm.code.toLowerCase().indexOf(lower)>=0||
+           pm.assignee.toLowerCase().indexOf(lower)>=0;
+  });
+  var el=gid('pm-list');if(el)el.innerHTML=renderPMList(filtered);
+}
+
+function logPMDone(code,asset,desc){
+  // Pre-fill the log sheet with this PM
+  openSheet(null);
+  setTimeout(function(){
+    setType('pm');
+    gid('f-desc').value=desc+' ('+code+')';
+    // Find asset in ASSETS
+    var found=ASSETS.find(function(a){return a.n===asset||a.n.indexOf(asset)>=0;});
+    if(found)selA2(found.c,found.n);
+  },100);
+}
+
 function renderMore(){
   var el=gid('pane-more');
+  var isAdmin=user===ADMIN;
   var month=new Date().getMonth();
-  var html='<div style="background:#1a1a1a;border-radius:12px;padding:16px;margin-bottom:12px">';
-  html+='<div style="font-size:13px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Manual Send</div>';
-  html+='<button onclick="manualSend()" style="width:100%;padding:14px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer">Open Outlook</button>';
-  html+='</div>';
+
+  var html='';
+
+  // SEND REPORT - visible to everyone
   html+='<div style="background:#1a1a1a;border-radius:12px;padding:16px;margin-bottom:12px">';
-  html+='<div style="font-size:13px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Monthly Export</div>';
+  html+='<div style="font-size:13px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Shift Report</div>';
+  html+='<p style="font-size:13px;color:#888;margin-bottom:12px">Generate a full PDF of this shift — all tasks, issues, parts from all technicians.</p>';
+  html+='<button onclick="generateAndSendReport()" style="width:100%;padding:14px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer">Generate Shift Report PDF</button>';
+  html+='</div>';
+
+  // MONTHLY EXPORT - visible to everyone
+  html+='<div style="background:#1a1a1a;border-radius:12px;padding:16px;margin-bottom:12px">';
+  html+='<div style="font-size:13px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Monthly Export</div>';
   html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">';
   html+='<div><div style="font-size:12px;color:#888;margin-bottom:5px">Month</div><select id="exp-m" style="width:100%;background:#222;border:1px solid #333;border-radius:8px;padding:10px;font-size:14px;color:#fff;outline:none">';
   ['January','February','March','April','May','June','July','August','September','October','November','December'].forEach(function(m,i){html+='<option value="'+i+'"'+(i===month?' selected':'')+'>'+m+'</option>';});
   html+='</select></div>';
   html+='<div><div style="font-size:12px;color:#888;margin-bottom:5px">Year</div><input type="number" id="exp-y" value="2026" style="width:100%;background:#222;border:1px solid #333;border-radius:8px;padding:10px;font-size:14px;color:#fff;outline:none;font-family:monospace"></div>';
   html+='</div>';
-  html+='<button onclick="doExport()" style="width:100%;padding:13px;background:#222;color:#fff;border:1px solid #333;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:8px">Work Log CSV</button>';
-  html+='<button onclick="doUtilExport()" style="width:100%;padding:13px;background:#222;color:#fff;border:1px solid #333;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:8px">Utilities CSV</button>';
-  html+='<button onclick="sendMonthlyRecap()" style="width:100%;padding:13px;background:rgba(22,163,74,.15);color:#4ade80;border:1px solid rgba(22,163,74,.3);border-radius:10px;font-size:15px;font-weight:600;cursor:pointer">Monthly Recap Email</button>';
+  html+='<button onclick="doExport()" style="width:100%;padding:12px;background:#222;color:#fff;border:1px solid #333;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:8px">Work Log CSV</button>';
+  html+='<button onclick="doUtilExport()" style="width:100%;padding:12px;background:#222;color:#fff;border:1px solid #333;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:8px">Utilities CSV</button>';
+  html+='<button onclick="sendMonthlyRecap()" style="width:100%;padding:12px;background:rgba(22,163,74,.15);color:#4ade80;border:1px solid rgba(22,163,74,.3);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer">Monthly Recap Email</button>';
   html+='</div>';
-  el.innerHTML=html;
-}
 
-// URGENT BANNER
-function checkUBanner(){
-  var dayShift=isDay(),pShift=dayShift?'Night':'Day';
-  var pDate;if(dayShift){var d=new Date();d.setDate(d.getDate()-1);pDate=d.toISOString().split('T')[0];}else{pDate=td();}
-  var urg=allE.filter(function(e){return e.date===pDate&&e.shift===pShift&&e.type==='issue'&&(e.priority==='urgent'||e.priority==='high');});
-  var b=gid('ubanner');
-  if(urg.length){
-    b.style.display='block';gid('ucnt').textContent=urg.length;
-    gid('urows').innerHTML=urg.slice(0,2).map(function(e){return '<div style="font-size:13px;color:#fca5a5;padding-left:16px">'+(e.assetName||'?')+': '+(e.desc||'')+'</div>';}).join('');
-  }else{b.style.display='none';}
-}
+  // ADMIN SECTION - Praful only
+  if(isAdmin){
+    html+='<div style="background:#1a0a00;border:1.5px solid #7c2d12;border-radius:12px;padding:16px;margin-bottom:12px">';
+    html+='<div style="font-size:12px;font-weight:700;color:#f97316;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Admin — Praful Only</div>';
 
-// SEND
-function buildReport(){
-  var cur=entries.filter(function(e){return e.date===td()&&e.shift===(isDay()?'Day':'Night');});
-  var techs=[...new Set(cur.map(function(e){return e.who;}))].filter(Boolean).join(', ')||'?';
-  var dt=cur.reduce(function(a,e){return a+e.dt;},0).toFixed(1);
-  var note=gid('snote').value;
-  var b='BBW MAINTENANCE - SHIFT REPORT\n'+td()+' - '+(isDay()?'Day (07:00-19:00)':'Night (19:00-07:00)')+'\nTechs: '+techs+'\nDowntime: '+dt+'h\n'+(note?'Note: '+note+'\n':'')+'==================================================\n\n';
-  var done=cur.filter(function(e){return e.type==='done'||e.type==='pm';});
-  var ongoing=cur.filter(function(e){return e.type==='ongoing';});
-  var issues=cur.filter(function(e){return e.type==='issue';});
-  var parts=cur.filter(function(e){return e.type==='part';});
-  if(done.length){b+='COMPLETED\n------------------------------\n';done.forEach(function(e,i){b+=(i+1)+'. ['+(e.assetName||'?')+'] '+(e.desc||'?')+(e.start?' | '+e.start+(e.end?'-'+e.end:''):'')+'\n';});b+='\n';}
-  if(ongoing.length){b+='IN PROGRESS\n------------------------------\n';ongoing.forEach(function(e,i){b+=(i+1)+'. ['+(e.assetName||'?')+'] '+(e.desc||'?')+'\n';});b+='\n';}
-  if(issues.length){b+='OPEN ISSUES\n------------------------------\n';issues.forEach(function(e,i){b+=(i+1)+'. ['+(e.priority||'?').toUpperCase()+'] '+(e.assetName||'?')+': '+(e.desc||'?')+'\n';});b+='\n';}
-  if(parts.length){b+='PARTS TO ORDER\n------------------------------\n';parts.forEach(function(e,i){b+=(i+1)+'. '+(e.partName||e.desc||'?')+' x'+(e.partQty||1)+'\n';});b+='\n';}
-  b+='Sent from BBW Work Log\n';
-  return b;
-}
+    // PIN RESETS
+    html+='<div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:8px">Reset Technician PINs</div>';
+    html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:16px">';
+    TECHS.filter(function(t){return t!==ADMIN;}).forEach(function(t){
+      html+='<button onclick="resetPin(&#39;'+t+'&#39;)" style="padding:9px 4px;border-radius:8px;background:rgba(220,38,38,.15);border:1px solid rgba(220,38,38,.3);color:#ef4444;font-size:12px;font-weight:600;cursor:pointer">'+t+'</button>';
+    });
+    html+='</div>';
 
-function checkShiftEnd(){var now=new Date(),h=now.getHours(),m=now.getMinutes();if((h===7||h===19)&&m===0)showSendModal();}
-
-function showSendModal(){
-  var cur=entries.filter(function(e){return e.date===td()&&e.shift===(isDay()?'Day':'Night');});
-  var iss=cur.filter(function(e){return e.type==='issue';}).length;
-  var pts=cur.filter(function(e){return e.type==='part';}).length;
-  var dt=cur.reduce(function(a,e){return a+e.dt;},0).toFixed(1);
-  gid('send-sub').textContent=td()+' - '+(isDay()?'Day':'Night')+' shift';
-  gid('send-stats').innerHTML='<div style="text-align:center"><div style="font-size:22px;font-weight:800;color:#fff">'+cur.length+'</div><div style="font-size:10px;color:#666;font-family:monospace">entries</div></div><div style="text-align:center"><div style="font-size:22px;font-weight:800;color:#ef4444">'+iss+'</div><div style="font-size:10px;color:#666;font-family:monospace">issues</div></div><div style="text-align:center"><div style="font-size:22px;font-weight:800;color:#f97316">'+pts+'</div><div style="font-size:10px;color:#666;font-family:monospace">parts</div></div><div style="text-align:center"><div style="font-size:22px;font-weight:800;color:#f59e0b">'+dt+'</div><div style="font-size:10px;color:#666;font-family:monospace">DT hrs</div></div>';
-  var m=gid('send-modal');m.style.display='flex';
-}
-
-function confirmSend(send){
-  gid('send-modal').style.display='none';
-  if(!send)return;
-  generateAndSendReport();
-}
-
-function manualSend(){
-  generateAndSendReport();
-}
-
-function generateAndSendReport(){
-  // Get ALL entries for current shift from allE (all technicians)
-  var shiftEntries = allE.filter(function(e){
-    return e.date===td() && e.shift===(isDay()?'Day':'Night');
-  });
-
-  // Sort by logged time
-  shiftEntries.sort(function(a,b){return (a.loggedAt||'').localeCompare(b.loggedAt||'');});
-
-  var shiftLabel = isDay()?'Day Shift (07:00-19:00)':'Night Shift (19:00-07:00)';
-  var techs = [...new Set(shiftEntries.map(function(e){return e.who;}))].filter(Boolean);
-  var totalDT = shiftEntries.reduce(function(a,e){return a+(e.dt||0);},0).toFixed(1);
-
-  // Categorise
-  var done     = shiftEntries.filter(function(e){return e.type==='done'||e.type==='pm';});
-  var ongoing  = shiftEntries.filter(function(e){return e.type==='ongoing';});
-  var issues   = shiftEntries.filter(function(e){return e.type==='issue';});
-  var parts    = shiftEntries.filter(function(e){return e.type==='part';});
-  var notes    = shiftEntries.filter(function(e){return e.type==='note';});
-
-  // Build HTML for print/PDF
-  var W = window.open('','_blank','width=800,height=900');
-  if(!W){alert('Please allow popups to generate PDF');return;}
-
-  var logo = document.querySelector('img[src^="data:image"]');
-  var logoSrc = logo ? logo.src : '';
-
-  var rows = function(items, cols){
-    if(!items.length) return '<tr><td colspan="'+cols+'" style="padding:10px;color:#999;font-style:italic">None</td></tr>';
-    return items.map(function(e){
-      var time = e.start?(e.start+(e.end?' - '+e.end:'')):'';
-      var dt = e.dt>0?e.dt+'h':'';
-      if(cols===4){
-        return '<tr><td style="padding:8px 10px;border-bottom:1px solid #eee;font-weight:600">'+
-          (e.assetName||'General')+(e.assetCode?' <span style="color:#999;font-size:11px">('+e.assetCode+')</span>':'')+'</td>'+
-          '<td style="padding:8px 10px;border-bottom:1px solid #eee">'+sanitize(e.desc||'')+'</td>'+
-          '<td style="padding:8px 10px;border-bottom:1px solid #eee;color:#666;white-space:nowrap">'+time+'</td>'+
-          '<td style="padding:8px 10px;border-bottom:1px solid #eee;color:#666">'+e.who+'</td></tr>';
-      } else if(cols===3){
-        var pcolor = e.priority==='urgent'?'#dc2626':e.priority==='high'?'#ea580c':e.priority==='monitor'?'#d97706':'#2563eb';
-        return '<tr><td style="padding:8px 10px;border-bottom:1px solid #eee"><span style="background:'+pcolor+'22;color:'+pcolor+';padding:2px 8px;border-radius:4px;font-size:12px;font-weight:700">'+(e.priority||'info').toUpperCase()+'</span></td>'+
-          '<td style="padding:8px 10px;border-bottom:1px solid #eee;font-weight:600">'+
-          (e.assetName||'General')+'</td>'+
-          '<td style="padding:8px 10px;border-bottom:1px solid #eee">'+sanitize(e.desc||'')+'</td></tr>';
-      } else {
-        return '<tr><td style="padding:8px 10px;border-bottom:1px solid #eee;font-weight:600">'+sanitize(e.partName||e.desc||'')+'</td>'+
-          '<td style="padding:8px 10px;border-bottom:1px solid #eee">'+sanitize(e.assetName||'')+'</td>'+
-          '<td style="padding:8px 10px;border-bottom:1px solid #eee;text-align:center">'+sanitize(e.partQty||'1')+'</td>'+
-          '<td style="padding:8px 10px;border-bottom:1px solid #eee">'+e.who+'</td></tr>';
-      }
-    }).join('');
-  };
-
-  function sanitize(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-
-  function section(title, color, headers, items, cols){
-    var thead = headers.map(function(h){return '<th style="padding:9px 10px;text-align:left;background:#f8f8f8;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:#666;border-bottom:2px solid '+color+'">'+h+'</th>';}).join('');
-    return '<div style="margin-bottom:28px">'+
-      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'+
-      '<div style="width:4px;height:22px;background:'+color+';border-radius:2px"></div>'+
-      '<h3 style="margin:0;font-size:15px;font-weight:700;color:#1a1a1e">'+title+'</h3>'+
-      '<span style="font-size:13px;color:#999">('+items.length+')</span></div>'+
-      '<table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr>'+thead+'</tr></thead>'+
-      '<tbody>'+rows(items,cols)+'</tbody></table></div>';
+    // EMAILJS
+    html+='<div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:8px">Auto-Send Settings (EmailJS)</div>';
+    html+='<p style="font-size:12px;color:#888;margin-bottom:10px">Setup at emailjs.com for auto-send at 7:00 AM / 7:00 PM</p>';
+    html+='<div style="margin-bottom:8px"><div style="font-size:11px;color:#666;margin-bottom:4px">Service ID</div><input id="ejs-s" type="text" placeholder="service_xxxxxxx" style="width:100%;background:#222;border:1px solid #333;border-radius:8px;padding:10px;font-size:14px;color:#fff;outline:none"></div>';
+    html+='<div style="margin-bottom:8px"><div style="font-size:11px;color:#666;margin-bottom:4px">Template ID</div><input id="ejs-t" type="text" placeholder="template_xxxxxxx" style="width:100%;background:#222;border:1px solid #333;border-radius:8px;padding:10px;font-size:14px;color:#fff;outline:none"></div>';
+    html+='<div style="margin-bottom:12px"><div style="font-size:11px;color:#666;margin-bottom:4px">Public Key</div><input id="ejs-p" type="text" placeholder="xxxxxxxxxxxxxxx" style="width:100%;background:#222;border:1px solid #333;border-radius:8px;padding:10px;font-size:14px;color:#fff;outline:none"></div>';
+    html+='<button onclick="saveEJS()" style="width:100%;padding:12px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:8px">Save & Enable Auto-Send</button>';
+    html+='<button onclick="testEJS()" style="width:100%;padding:12px;background:#222;color:#aaa;border:1px solid #333;border-radius:10px;font-size:13px;cursor:pointer">Test Send Now</button>';
+    html+='</div>';
   }
 
-  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">'+
-    '<title>BBW Shift Report - '+shiftLabel+' - '+td()+'</title>'+
-    '<style>'+
-    'body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;margin:0;padding:0;color:#1a1a1e;background:#fff}'+
-    '.page{max-width:800px;margin:0 auto;padding:32px}'+
-    'table{border-radius:8px;overflow:hidden}'+
-    'tr:hover td{background:#fafafa}'+
-    '@media print{.no-print{display:none!important}.page{padding:16px}}'+
-    '</style></head><body>'+
-    '<div class="page">'+
-
-    // HEADER
-    '<div style="display:flex;align-items:flex-start;justify-content:space-between;padding-bottom:20px;border-bottom:2px solid #111;margin-bottom:24px">'+
-    '<div>'+
-    (logoSrc?'<img src="'+logoSrc+'" style="height:36px;margin-bottom:12px;display:block" alt="BBW">':'')+
-    '<h1 style="margin:0;font-size:22px;font-weight:800;color:#111">Shift Handover Report</h1>'+
-    '<div style="font-size:14px;color:#666;margin-top:6px">'+shiftLabel+' &nbsp;|&nbsp; '+td()+'</div>'+
-    '</div>'+
-    '<div style="text-align:right">'+
-    '<div style="font-size:13px;color:#666;margin-bottom:4px">Technicians on shift</div>'+
-    '<div style="font-size:14px;font-weight:600;color:#111">'+(techs.join(', ')||'—')+'</div>'+
-    '</div></div>'+
-
-    // STATS ROW
-    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px">'+
-    '<div style="background:#f5f5f7;border-radius:10px;padding:14px;text-align:center"><div style="font-size:26px;font-weight:800;color:#111">'+shiftEntries.length+'</div><div style="font-size:11px;color:#666;text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Total Tasks</div></div>'+
-    '<div style="background:#fef2f2;border-radius:10px;padding:14px;text-align:center"><div style="font-size:26px;font-weight:800;color:#dc2626">'+issues.length+'</div><div style="font-size:11px;color:#666;text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Open Issues</div></div>'+
-    '<div style="background:#fff7ed;border-radius:10px;padding:14px;text-align:center"><div style="font-size:26px;font-weight:800;color:#ea580c">'+parts.length+'</div><div style="font-size:11px;color:#666;text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Parts Needed</div></div>'+
-    '<div style="background:#fffbeb;border-radius:10px;padding:14px;text-align:center"><div style="font-size:26px;font-weight:800;color:#d97706">'+totalDT+'h</div><div style="font-size:11px;color:#666;text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Downtime</div></div>'+
-    '</div>'+
-
-    // SECTIONS
-    (issues.length?
-      section('Open Issues — Next Shift Must Action','#dc2626',['Priority','Asset','Description'],issues,3):
-      '<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px;margin-bottom:28px;font-weight:600;color:#16a34a;font-size:14px">&#10003; No open issues — clean handover</div>')+
-
-    section('Work Completed This Shift','#16a34a',['Asset','Description','Time','Technician'],done,4)+
-
-    (ongoing.length?section('Work In Progress — Continue Next Shift','#d97706',['Asset','Description','Time','Technician'],ongoing,4):'')+
-
-    (parts.length?section('Parts to Order','#ea580c',['Part Name','Asset','Qty','Requested By'],parts,4):'')+
-
-    (notes.length?section('Notes','#2563eb',['Asset','Note','Time','Technician'],notes,4):'')+
-
-    // FOOTER
-    '<div style="margin-top:32px;padding-top:16px;border-top:1px solid #eee;display:flex;justify-content:space-between;align-items:center">'+
-    '<div style="font-size:12px;color:#999">Generated '+new Date().toLocaleString('en-CA')+'</div>'+
-    '<button onclick="window.print()" class="no-print" style="padding:10px 20px;background:#111;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">&#128438; Save as PDF</button>'+
-    '</div>'+
-    '</div></body></html>';
-
-  W.document.write(html);
-  W.document.close();
-  setTimeout(function(){W.focus();},300);
-}
-
-function doExport(){
-  var month=parseInt(gid('exp-m').value),year=parseInt(gid('exp-y').value);
-  var filtered=allE.filter(function(e){var d=new Date(e.date);return d.getMonth()===month&&d.getFullYear()===year;});
-  if(!filtered.length){alert('No entries');return;}
-  var cols=['Date','Shift','Technician','Asset','Code','Type','Description','Start','End','DT','Part','Qty','Priority'];
-  var rows=[cols.join(',')];
-  filtered.forEach(function(e){rows.push([e.date,e.shift,e.who||'','"'+(e.assetName||'')+'"',e.assetCode||'',e.type,'"'+((e.desc||'').replace(/"/g,'""'))+'"',e.start||'',e.end||'',e.dt||0,'"'+(e.partName||'')+'"',e.partQty||'',e.priority||''].join(','));});
-  var mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  var blob=new Blob([rows.join('\n')],{type:'text/csv'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='BBW_WorkLog_'+mn[month]+year+'.csv';a.click();URL.revokeObjectURL(url);
-}
-
-function doUtilExport(){
-  var month=parseInt(gid('exp-m').value),year=parseInt(gid('exp-y').value);
-  var filtered=utilLogs.filter(function(r){var d=new Date(r.date);return d.getMonth()===month&&d.getFullYear()===year;});
-  if(!filtered.length){alert('No utility data');return;}
-  var cols=['Date','W3(m3)','W5(m3)','Gas(ft3)','Elec(GWh)','Boiler(L)','Past(L)','CT(L)','Steam(kg)','By'];
-  var rows=[cols.join(',')];
-  filtered.forEach(function(r){rows.push([r.date,r.w3||'',r.w5||'',r.gas||'',r.elec||'',r.boil||'',r.past||'',r.cool||'',r.steam||'',r.by||''].join(','));});
-  var mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  var blob=new Blob([rows.join('\n')],{type:'text/csv'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='BBW_Utilities_'+mn[month]+year+'.csv';a.click();URL.revokeObjectURL(url);
-}
-
-function sendMonthlyRecap(){
-  var month=parseInt(gid('exp-m').value),year=parseInt(gid('exp-y').value);
-  var filtered=allE.filter(function(e){var d=new Date(e.date);return d.getMonth()===month&&d.getFullYear()===year;});
-  if(!filtered.length){alert('No entries');return;}
-  var mn=['January','February','March','April','May','June','July','August','September','October','November','December'];
-  var dt=filtered.reduce(function(a,e){return a+e.dt;},0).toFixed(1);
-  var techs={};filtered.forEach(function(e){if(e.who)techs[e.who]=(techs[e.who]||0)+1;});
-  var b='BBW MONTHLY RECAP - '+mn[month]+' '+year+'\n==================================================\nEntries: '+filtered.length+'\nDowntime: '+dt+'h\nIssues: '+filtered.filter(function(e){return e.type==='issue';}).length+'\n\nTECHNICIANS\n';
-  Object.entries(techs).sort(function(a,b){return b[1]-a[1];}).forEach(function(kv){b+='  '+kv[0]+': '+kv[1]+'\n';});
-  var subj=encodeURIComponent('BBW Monthly Recap - '+mn[month]+' '+year);
-  window.location.href='mailto:'+MAILTO+'?subject='+subj+'&body='+encodeURIComponent(b);
+  el.innerHTML=html;
+  // Load saved EJS settings
+  if(isAdmin){
+    var s=localStorage.getItem('bbw_ejs_s');var t=localStorage.getItem('bbw_ejs_t');var p=localStorage.getItem('bbw_ejs_p');
+    if(gid('ejs-s')&&s)gid('ejs-s').value=s;
+    if(gid('ejs-t')&&t)gid('ejs-t').value=t;
+    if(gid('ejs-p')&&p)gid('ejs-p').value=p;
+  }
 }
 
 function openLB(src,lbl){var lb=gid('lb');gid('lb-img').src=src;gid('lb-lbl').textContent=lbl||'';lb.style.display='flex';}
@@ -1015,7 +956,7 @@ function openLB(src,lbl){var lb=gid('lb');gid('lb-img').src=src;gid('lb-lbl').te
 var lang = 'en';
 var TRANS = {
   en: {
-    mylog: 'My Log', shift: 'This Shift', prev: 'Prev Shift', util: 'Utilities', more: 'More',
+    mylog: 'My Log', shift: 'This Shift', prev: 'Prev Shift', util: 'Utilities', more: 'More', pm: 'PMs',
     signin: 'Sign In', selectname: 'Select your name', enterpin: 'Enter your 4-digit PIN',
     createpin: 'Choose a 4-digit PIN', confirmpin: 'Confirm your PIN',
     hello: 'Hello, ', welcome: 'Welcome, ', enterpin2: 'Enter your PIN', createpin2: 'Create your PIN',
@@ -1067,7 +1008,8 @@ function setLang(l){
     else{ukBtn.style.background='#fff';ukBtn.style.color='#111';enBtn.style.background='none';enBtn.style.color='#666';}
   }
   // Update tab labels
-  var tabs={log:'mylog',shift:'shift',prev:'prev',util:'util',more:'more'};
+  var tabs={log:'mylog',shift:'shift',prev:'prev',util:'util',pm:'pm',more:'more'};
+  Object.keys(tabs).forEach(function(t){var el=gid('tab-'+t);if(el)el.textContent=TRANS[l][tabs[t]]||el.textContent;});
   Object.keys(tabs).forEach(function(t){var el=gid('tab-'+t);if(el)el.textContent=TRANS[l][tabs[t]];});
   // Re-render current pane
   renderAll();
